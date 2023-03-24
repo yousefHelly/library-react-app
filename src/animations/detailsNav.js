@@ -1,0 +1,116 @@
+export const DetailsNavVariantsContainer = {
+    init:{
+        x:'100%'
+    },
+    show:{
+        x:0,
+        transition:{
+            delay:2,
+            duration:0.75,
+            staggerChildren:0.2,
+            when:'beforeChildren'
+        }
+    },
+    leave:{
+    }
+}
+
+export const DetailsNavVariants = {
+    init:{
+        opacity:0
+    },
+    show:{
+        opacity:1,
+        transition:{
+            duration:0.3,
+            staggerChildren:0.2,
+            when:'beforeChildren'
+        }
+    },
+    leave:{
+        x:'100%',
+        opacity:0,
+        transition:{
+            duration:0.5,
+            staggerChildren:0.2,
+        }
+    }
+}
+export const imgVariants = {
+    init:{
+        scale:0.5,
+        opacity:0
+    },
+    show:{
+        scale:1,
+        opacity:1,
+        transition:{
+            duration:0.3
+        }
+    }
+}
+export const plotVariants = {
+    init:{
+        x:-20,
+        opacity:0
+    },
+    show:{
+        x:0,
+        opacity:1,
+        transition:{
+            duration:0.3
+        }
+    }
+}
+export const plotTextVariants = {
+    init:{
+        y:20,
+        opacity:0
+    },
+    show:{
+        y:0,
+        opacity:1,
+        transition:{
+            duration:0.3
+        }
+    }
+}
+export const bookViewBtn = {
+    init:{
+        scale:0.5,
+        opacity:0
+    },
+    show:{
+        scale:1,
+        opacity:1,
+        transition:{
+            duration:0.3
+        }
+    }
+}
+export const bookInfoVariants = {
+    init:{
+        opacity:0
+    },
+    show:{
+        opacity:1,
+        transition:{
+            duration:0.3,
+            staggerChildren:0.2,
+            when:'beforeChildren'
+        }
+    }
+}
+export const bookInfoTextVariants = {
+    init:{
+        opacity:0,
+        y:-20
+    },
+    show:{
+        opacity:1,
+        y:0,
+        transition:{
+            duration:0.2,
+        }
+    }
+}

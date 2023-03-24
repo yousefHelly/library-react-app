@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.cdnfonts.com/css/tt-norms-pro');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
+body {
+	font-family: 'TT Norms Pro', sans-serif;
+}
+::-webkit-scrollbar {
+	display: none;
+}
+.sec:not(.active),
+.side-sec {
+	font-family: 'Lato', sans-serif;
+	opacity: 0.75;
+}
+
+a.sec:not(.active) {
+	@apply hover:text-primary;
+}
+a.side-sec:not(.active),
+button.side-sec {
+	@apply hover:text-slate-50 hover:opacity-100;
+}
+.sec.active {
+	@apply font-bold pb-[1.1rem] border-b-[0.25rem] border-primary relative;
+}
+.side-sec.active {
+	@apply bg-primary/75 opacity-100;
+}
+.sec.active::after {
+	content: '';
+	@apply absolute w-2 h-2 bg-primary -bottom-1 rounded-full left-1/2 -translate-x-1/2;
+}
+.modal-bg {
+	@apply fixed left-0 top-0  w-full h-full bg-slate-900/25 backdrop-blur-sm z-50;
+}
