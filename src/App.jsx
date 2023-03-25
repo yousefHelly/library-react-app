@@ -11,14 +11,12 @@ import { Search } from './pages/Search';
 import { MyRequests } from './pages/MyRequests';
 import { Reading } from './pages/Reading';
 import { Login } from './pages/Login';
-import { Register } from './pages/Register';
 import { BookView } from './pages/BookView';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
       <React.Fragment>
       <Route path='/login' element={<Login/>}></Route>
-      <Route path='/register' element={<Register/>}></Route>
       <Route element={<NavBar/>}>
         <Route index element={<Home/>}/>
         <Route path="/categories" element={<Categories/>}/>

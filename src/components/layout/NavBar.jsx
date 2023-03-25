@@ -50,7 +50,7 @@ export const NavBar = () => {
   return (
     <React.Fragment>
         <div className='grid grid-cols-12 mx-auto overflow-x-hidden'>
-            <div className='relative overflow-scroll w-full px-10 col-span-12 xl:col-span-9'>
+            <div className='relative w-full px-10 col-span-12 xl:col-span-9'>
                 <div className='flex h-[80px] items-center justify-between'>
                     <div className='flex h-full items-center'>
                         <button className='self-center'  onClick={()=>dispatchSideNav(openNav)}>    

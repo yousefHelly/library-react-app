@@ -1,4 +1,4 @@
-import { CHANGE_CURRENT_BOOK, CLOSE_SIDENAV, OPEN_SIDENAV } from './../Types';
+import { CLOSE_SIDENAV, OPEN_SIDENAV } from './../Types';
 
 
 

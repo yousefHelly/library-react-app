@@ -1,14 +1,21 @@
 import React,{useEffect} from 'react'
 import {motion} from 'framer-motion'
 import { DetailedBook } from './../components/home/DetailedBook';
-import img1 from '../assets/imgs/book-1.jpg'
-import img2 from '../assets/imgs/book-2.jpg'
 import { BookGridView } from '../components/home/BookGridView';
 import { childVariants, ContainerVariants, cardChildVariants } from './../animations/home';
 import { Books } from './../Data';
+import { useDispatch } from 'react-redux';
+import { HOME } from './../Redux/Types';
+import { ChangeDetailsNav } from '../Redux/actions/AllActions';
 
 export const Home = () => {
-  useEffect(()=>{document.title = 'Library | Home'},[])
+  const dispatch = useDispatch()
+  useEffect(
+    ()=>{
+      document.title = 'Library | Home'
+      dispatch(ChangeDetailsNav(HOME))
+    }  
+  ,)
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='my-5 flex flex-col gap-5'>
         <motion.h4 variants={childVariants} className='text-xl font-bold'>For you</motion.h4>
