@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 export const DetailsNavCurrentBook = () => {
     const currentBook = useSelector((state)=>state.current.currentBook)
   return (
-    <motion.div variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave' transition={{delay:2}} className='text-slate-50 w-full h-full flex px-10 flex-col justify-center items-center'>
+    <motion.div key='CurrentBook' variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave' className='text-slate-50 w-full h-full flex px-10 flex-col justify-center items-center'>
     <AnimatePresence mode='wait'>
        {
         Books.map((book,i)=>{return(

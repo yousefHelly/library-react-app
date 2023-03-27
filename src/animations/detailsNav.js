@@ -5,13 +5,19 @@ export const DetailsNavVariantsContainer = {
     show:{
         x:0,
         transition:{
-            delay:2,
+            delay:1.5,
             duration:0.75,
             staggerChildren:0.2,
             when:'beforeChildren'
         }
     },
     leave:{
+        x:'100%',
+        opacity:0,
+        transition:{
+            duration:0.5,
+            when:'beforeChildren'
+        }
     }
 }
 

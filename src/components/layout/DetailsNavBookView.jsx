@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 export const DetailsNavBookView = () => {
     const currentBook = useSelector((state)=>state.current.currentBook)
   return (
-    <motion.div variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave' transition={{delay:2}} className='text-slate-50 w-full h-full flex px-10 flex-col justify-start items-center overflow-y-auto overflow-x-hidden'>
+    <motion.div key='BookView' variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave'  className='text-slate-50 w-full h-full flex px-10 flex-col justify-start items-center overflow-y-auto overflow-x-hidden'>
     <AnimatePresence mode='wait'>
        {
         Books.map((book,i)=>{return(
