@@ -12,6 +12,10 @@ import { MyRequests } from './pages/MyRequests';
 import { Reading } from './pages/Reading';
 import { Login } from './pages/Login';
 import { BookView } from './pages/BookView';
+import { Settings } from './pages/Settings/Settings';
+import { SettingsProfile } from './pages/Settings/SettingsProfile';
+import { SettingsHistory } from "./pages/Settings/SettingsHistory";
+import { SettingsAccountStatus } from "./pages/Settings/SettingsAccountStatus";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +30,11 @@ const router = createBrowserRouter(
         <Route path="/reading" element={<Reading/>}/>
         <Route path="/:id" element={<BookView/>}/>
         <Route path="*" element={<Error/>}/>
+        <Route path="/settings" element={<Settings/>}>
+          <Route path="search-history" element={<SettingsHistory/>} />
+          <Route path="profile" element={<SettingsProfile/>}/>
+          <Route path="account-status" element={<SettingsAccountStatus/>} />
+        </Route>
       </Route>
       </React.Fragment>
   )

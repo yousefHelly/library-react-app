@@ -1,10 +1,75 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
-import { DetailsNavVariants, DetailsNavVariantsContainer } from './../../animations/detailsNav';
+import { DetailsNavVariantsContainer } from './../../animations/detailsNav';
 import * as Slider from '@radix-ui/react-slider';
-import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+const categories = ['Social Novel','Horror','Short Story','Depression']
+const authors = ['Charles Dickens','George Orwell','Scott Fitzgerald']
+
 export const DetailsNavSearch = () => {
-    const currentBook = useSelector((state)=>state.current.currentBook)
+    const [searchParams,setSearchParams] = useSearchParams()
+    //All Category state and ref
+    const [catAll,setCatAll] = useState(true)
+    const catAllRef = useRef(0)
+    //All author state and ref
+    const [AuthorsAll,setAuthorsAll] = useState(true)
+    const AuthorsAllRef = useRef(0)
+    //All Publication Date state
+    const [PDVal,setPDVal] = useState({0:1840,1:2002})
+    //make All in Category is default 
+    useEffect(()=>{
+        catAllRef.current.checked = catAll
+        catAll&&searchParams.set('category','All')
+        catAll&&setSearchParams(searchParams)
+    },[catAll])
+    //make All in author is default 
+    useEffect(()=>{
+        AuthorsAllRef.current.checked = AuthorsAll
+        AuthorsAll&&searchParams.set('author','All')
+        AuthorsAll&&setSearchParams(searchParams)
+    },[AuthorsAll])
+    //make [minimum-maximum] in Publication Date is default 
+    useEffect(()=>{
+        PDVal&&searchParams.set('publication date',`${PDVal[0]},${PDVal[1]}`)
+        PDVal&&setSearchParams(searchParams)
+    },[PDVal])
+    //Handling all filtration types and pass them to the url
+    const handleClicked = (checked,name,type)=>{
+        if(type==='slider'){
+            searchParams.set('publication date',`${checked[0]},${checked[1]}`)
+            setSearchParams(searchParams)
+        }else{
+            let checkedFields = []
+            //make sure searchParam values Doesn't equal All or nothing
+            searchParams.get(`${type}`)!='All'&&searchParams.get(`${type}`)!=''&&checkedFields.push(searchParams.get(`${type}`).split('&'))
+            //filtering all repeated values
+            checkedFields = [...new Set(...checkedFields)]
+            //removing All from either category or author based on the name parameter
+            categories.includes(name)?setCatAll(false):setAuthorsAll(false)
+            //tracking if user checked or unchecked the input 
+            if(checked){
+                //adding the filed if it's not found in the checkedFields array
+                if(!checkedFields.includes(name)){
+                    checkedFields.push(`${name}`)
+                }
+                //passing all checkedFields to the url with the same type
+                searchParams.set(`${type}`,checkedFields.join('&'))
+                setSearchParams(searchParams)
+            }else{
+                //if checkedFields includes the unchecked filed
+                if(checkedFields.includes(name)){
+                    //filter checkedFields and remove unchecked filed
+                    checkedFields = checkedFields.filter((cat)=>cat!=name)
+                    //reset and pass all checkedFields to the url with the same type
+                    searchParams.set(`${type}`,checkedFields.join('&'))
+                    setSearchParams(searchParams)
+                    //if checkedFields is empty set all authors or category = true
+                    checkedFields.length===0&&searchParams.get('category')==''?setCatAll(true):null
+                    checkedFields.length===0&&searchParams.get('author')==''?setAuthorsAll(true):null
+                }
+            }
+        }
+    }
     return (
         <motion.div key='Search' variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave' className='text-slate-50 w-full h-full flex px-10 flex-col justify-start  overflow-y-auto overflow-x-hidden'>
         <AnimatePresence mode='wait'>
@@ -13,26 +78,24 @@ export const DetailsNavSearch = () => {
                     <h4 className='text-xl pb-3'>Category</h4>
                     <div className='flex flex-col gap-3 pt-3 overflow-scroll max-h-[150px]'>
                         <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
+                        <input ref={catAllRef} onChange={(e)=>setCatAll(e.target.checked)} type="checkbox" className="checkbox checkbox-primary" />
                         <span className="label-text text-slate-50">All</span> 
                         </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Social Novel</span> 
-                        </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Horror</span> 
-                        </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Short Story</span> 
-                        </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Depression</span> 
-                        </label>
-
+                        {
+                            categories.map((category)=>{
+                                //if all category is selected uncheck others
+                                const ref = useRef(0)
+                                useEffect(()=>{
+                                    catAll?ref.current.checked = false : null
+                                },[catAll])
+                                return(
+                                    <label key={category} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
+                                    <input ref={ref} onChange={(e)=>handleClicked(e.target.checked,e.target.nextSibling.textContent,'category')} type="checkbox" className="checkbox checkbox-primary" />
+                                    <span className="label-text text-slate-50">{category}</span> 
+                                    </label>
+                                )
+                            })
+                        }
                     </div>
                 </div>
                 <div className='h-[1px] bg-slate-400'></div>
@@ -40,40 +103,51 @@ export const DetailsNavSearch = () => {
                     <h4 className='text-xl'>Author</h4>
                     <div className='flex flex-col gap-3 pt-4 overflow-scroll max-h-[150px]'>
                         <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
+                        <input ref={AuthorsAllRef} onChange={(e)=>setAuthorsAll(e.target.checked)} type="checkbox" className="checkbox checkbox-primary" />
                         <span className="label-text text-slate-50">All</span> 
                         </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Charles Dickens</span> 
-                        </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">George Orwell</span> 
-                        </label>
-                        <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                        <input type="checkbox" className="checkbox checkbox-primary" />
-                        <span className="label-text text-slate-50">Scott Fitzgerald</span> 
-                        </label>
+                        {
+                            authors.map((author)=>{
+                                //if all author is selected uncheck others
+                                const ref2 = useRef(0)
+                                useEffect(()=>{
+                                    AuthorsAll?ref2.current.checked = false : null
+                                },[AuthorsAll])
+                                return(
+                                    <label key={author} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
+                                    <input ref={ref2} onChange={(e)=>handleClicked(e.target.checked,e.target.nextSibling.textContent,'author')}  type="checkbox" className="checkbox checkbox-primary" />
+                                    <span className="label-text text-slate-50">{author}</span> 
+                                    </label>
+                                )
+                            })
+                        }
                     </div>
                 </div>
                 <div className='h-[1px] bg-slate-400'></div>
                 <div className='flex flex-col gap-2'>
                 <h4 className='text-xl pb-3'>Publication Date</h4>
-                <Slider.Root className="SliderRoot relative flex items-center h-[20px]" defaultValue={[0,100]} max={100} step={1} minStepsBetweenThumbs={1} aria-label="Volume">
+                <Slider.Root onValueCommit={(val)=>handleClicked(val,'Date','slider')} onValueChange={(val)=>setPDVal({0:val[0],1:val[1]})} className="SliderRoot relative flex items-center h-[20px]" defaultValue={[1840,2002]} min={1840} max={2002} step={1} minStepsBetweenThumbs={1} aria-label="Volume">
                     <Slider.Track className="bg-red-500  relative rounded-full flex-1 h-[3px]">
                         <Slider.Range className="SliderRange bg-primary absolute rounded-full h-full" />
                     </Slider.Track>
                     <Slider.Thumb className="SliderThumb hover:bg-primary"/>
                     <Slider.Thumb className="SliderThumb hover:bg-primary"/>
                 </Slider.Root>
+                <div className='flex flex-col'>
                 <div className='flex justify-between'>
                 <p>1840</p>
                 <p>2002</p>
+                </div>
+                <div className='flex pt-4 gap-4 items-center'>
+                <p>From Date</p>
+                <input className='w-14 py-1 bg-slate-50 text-center rounded-md text-secondary' value={PDVal[0]} type="text" readOnly/>
+                <p className=''>To</p>
+                <input className='w-14 py-1 bg-slate-50 text-center rounded-md text-secondary' value={PDVal[1]} type="text" readOnly/>
+                </div>
                 </div>
                 </div>
             </div>
         </AnimatePresence>
         </motion.div>
-      )
+    )
 }

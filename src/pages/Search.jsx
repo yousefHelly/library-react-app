@@ -7,19 +7,21 @@ import { cardChildVariants, ContainerVariants } from './../animations/home';
 import { ChangeDetailsNav } from '../Redux/actions/AllActions';
 import { useDispatch } from 'react-redux';
 import { SEARCH } from './../Redux/Types';
+import { useSearchParams } from 'react-router-dom';
 
 export const Search = () => {
   const dispatch = useDispatch()
+  const [searchParams,setSearchParams] = useSearchParams()
   useEffect(()=>{
     document.title = `Library | search`
     dispatch(ChangeDetailsNav(SEARCH))
-  })
+  },[])
   return (
     <div className='h-screen'>
       <SearchInput/>
       <div className='pt-10'>
       <div className='flex justify-between'>
-      <p className='sec text-lg px-4'>All books</p>
+      <p className='sec text-lg px-4'>{searchParams.get('category')} books by {searchParams.get('author')} in {searchParams.get('publication date')}</p>
       <p className='sec text-lg px-4'>total books : 4</p>
       </div>
       <div className='w-full h-[2px] bg-slate-300'></div>

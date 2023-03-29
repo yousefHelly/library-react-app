@@ -36,6 +36,9 @@ button.side-sec {
 	content: '';
 	@apply absolute w-2 h-2 bg-primary -bottom-1 rounded-full left-1/2 -translate-x-1/2;
 }
+a.settings-side-sec.active {
+	@apply hover:text-secondary relative before:absolute before:-left-1 before:top-0 before:h-full before:w-1 before:bg-primary before:rounded-2xl bg-slate-50;
+}
 .modal-bg {
 	@apply fixed left-0 top-0  w-full h-full bg-slate-900/25 backdrop-blur-sm z-50;
 }

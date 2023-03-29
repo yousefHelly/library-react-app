@@ -1,3 +1,7 @@
+//Book Status
+export const AVAILABLE = 'AVAILABLE'
+export const REQUESTED = 'REQUESTED'
+export const APPROVED = 'APPROVED'
 //side navbar types
 export const OPEN_SIDENAV = 'OPEN_SIDENAV'
 export const CLOSE_SIDENAV = 'CLOSE_SIDENAV'
