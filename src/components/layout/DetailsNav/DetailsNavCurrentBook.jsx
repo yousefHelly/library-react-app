@@ -1,7 +1,7 @@
 import {motion ,AnimatePresence } from 'framer-motion';
 import React from 'react'
-import { Books } from './../../Data';
-import { DetailsNavVariantsContainer, imgVariants, bookInfoVariants, bookInfoTextVariants, plotVariants, plotTextVariants, bookViewBtn, DetailsNavVariants } from './../../animations/detailsNav';
+import { Books } from '../../../Data';
+import { DetailsNavVariantsContainer, imgVariants, bookInfoVariants, bookInfoTextVariants, plotVariants, plotTextVariants, bookViewBtn, DetailsNavVariants } from '../../../animations/detailsNav';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 

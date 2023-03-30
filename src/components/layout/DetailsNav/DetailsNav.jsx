@@ -3,7 +3,7 @@ import {AnimatePresence} from 'framer-motion'
 import { useSelector } from 'react-redux';
 import { DetailsNavCurrentBook } from './DetailsNavCurrentBook';
 import { DetailsNavBookView } from './DetailsNavBookView';
-import { HOME, VIEW_BOOK, SEARCH } from './../../Redux/Types';
+import { HOME, VIEW_BOOK, SEARCH } from '../../../Redux/Types';
 import { DetailsNavSearch } from './DetailsNavSearch';
 
 export const DetailsNav = () => {

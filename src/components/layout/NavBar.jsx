@@ -6,7 +6,7 @@ import {AiOutlineClose} from 'react-icons/ai'
 import { SideNav } from './SideNav'
 import { Dialog } from '@headlessui/react'
 import { AnimatePresence , motion, useMotionValueEvent, useScroll} from 'framer-motion'
-import { DetailsNav } from './DetailsNav';
+import { DetailsNav } from './DetailsNav/DetailsNav';
 import { useDispatch, useSelector } from 'react-redux'
 import { openNav, closeNav } from '../../Redux/actions/AllActions'
 const ScrollToTopBtn = ()=>{

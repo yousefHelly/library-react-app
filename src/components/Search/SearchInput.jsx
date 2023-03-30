@@ -4,6 +4,7 @@ import {MdOutlineYoutubeSearchedFor} from 'react-icons/md'
 import {AnimatePresence, motion} from 'framer-motion'
 import { searchInputVariants } from '../../animations/search';
 import { searchHistoryVariants } from './../../animations/search';
+import { Link } from 'react-router-dom';
 export const SearchInput = () => {
     const [searchHistory,setSearchHistory] = useState(false)
     const searchInput = useRef(0)
@@ -28,7 +29,7 @@ export const SearchInput = () => {
         <p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>Oliver Twist<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
         <p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>The Great gatsby<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
         <p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>Great Expectations<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
-        <a className='sec text-center cursor-pointer py-1'>view all history</a>
+        <Link to='/settings/search-history' className='sec text-center cursor-pointer py-1'>view all history</Link>
       </div>
     </motion.div>
       }

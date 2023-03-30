@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
-import { DetailsNavVariantsContainer } from './../../animations/detailsNav';
+import { DetailsNavVariantsContainer } from '../../../animations/detailsNav';
 import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'react-router-dom';
 const categories = ['Social Novel','Horror','Short Story','Depression']

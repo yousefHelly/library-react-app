@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
-import { DetailsNavVariants, DetailsNavVariantsContainer } from './../../animations/detailsNav';
-import { Books } from './../../Data';
+import { DetailsNavVariants, DetailsNavVariantsContainer } from '../../../animations/detailsNav';
+import { Books } from '../../../Data';
 import * as Accordion from '@radix-ui/react-accordion';
 import { FaChevronDown } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
