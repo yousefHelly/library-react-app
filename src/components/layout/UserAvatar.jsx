@@ -5,7 +5,7 @@ export const UserAvatar = ({size=24}) => {
   return (
     <Avatar.Root className={`avatar w-${size} h-${size}`}>
     <Avatar.Image
-        className="rounded-full"
+        className={`rounded-full w-${size} h-${size}`}
         src="https://media.istockphoto.com/id/1290233518/photo/ginger-cat-portrait.jpg?s=612x612&w=0&k=20&c=V-_wnKjh4w4WqVLhe20t-9IUbUoF47odDU5683cr2LM="
         alt="User Avatar"
     />
