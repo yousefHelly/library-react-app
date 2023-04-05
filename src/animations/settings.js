@@ -1,4 +1,4 @@
-export const settingsNavContainerVariants = {
+export const leftContainerVariants = {
     init:{
         x:-100,
         rotate:'-15deg'
@@ -9,6 +9,19 @@ export const settingsNavContainerVariants = {
         transition:{
             duration:0.3,
             staggerChildren:0.3
+        }
+    }
+}
+export const rightContainerVariants = {
+    init:{
+        x:100,
+        rotate:'15deg'
+    },
+    show:{
+        x:0,
+        rotate:0,
+        transition:{
+            duration:0.3
         }
     }
 }

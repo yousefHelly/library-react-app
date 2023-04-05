@@ -40,6 +40,10 @@ export const SideNav = () => {
         navigate('/settings/profile')
         dispatchSideNav(closeNav)
     }
+    const handleLogout = ()=>{
+        navigate('/login')
+        dispatchSideNav(closeNav)
+    }
   return (
     <React.Fragment>
         <motion.div 
@@ -76,7 +80,7 @@ export const SideNav = () => {
                         </button>
                 </div>
                 <div className='text-lg'>
-                        <button onClick={()=>setShowLogOut(true)} className='side-sec flex items-center gap-3 rounded-full py-1 px-5'>
+                        <button onClick={()=>handleLogout()} className='side-sec flex items-center gap-3 rounded-full py-1 px-5'>
                             <ImExit className=''/>Log Out
                         </button>
                 </div>

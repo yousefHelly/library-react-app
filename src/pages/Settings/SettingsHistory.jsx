@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 import { childVariants, ContainerVariants } from './../../animations/home';
 
 export const SettingsHistory = () => {
-    const num = 1235;
-    console.log(num.toLocaleString());
   return (
     <motion.div  variants={ContainerVariants} initial='init' animate='show' className='flex flex-col gap-6'>
         <motion.h4 variants={childVariants} className='text-2xl'>Search History</motion.h4>
