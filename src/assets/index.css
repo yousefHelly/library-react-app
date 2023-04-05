@@ -27,7 +27,7 @@ button.side-sec {
 	@apply hover:text-slate-50 hover:opacity-100;
 }
 .sec.active {
-	@apply font-bold pb-[1.1rem] border-b-[0.25rem] border-primary relative;
+	@apply font-bold pb-[1rem] border-b-[0.25rem] border-primary relative;
 }
 .side-sec.active {
 	@apply bg-primary/75 opacity-100;

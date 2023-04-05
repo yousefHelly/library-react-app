@@ -12,3 +12,8 @@ export const CHANGE_CURRENT_PAGE = 'CHANGE_CURRENT_PAGE'
 export const HOME = 'HOME'
 export const VIEW_BOOK = 'VIEW_BOOK'
 export const SEARCH = 'SEARCH'
+//CurrentUser types
+export const CHANGE_CURRENT_USER = 'CHANGE_CURRENT_USER'
+export const VISITOR = 'VISITOR'
+export const READER = 'READER'
+export const ADMIN = 'ADMIN'

@@ -2,6 +2,7 @@ import React from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup'
 import {MdError} from 'react-icons/md'
+import { useSelector } from 'react-redux';
 const FormInput = ({children})=>{
     return(
         <div className='flex gap-2 flex-col col-span-6 px-6'>
@@ -10,9 +11,10 @@ const FormInput = ({children})=>{
     )
 }
 export const ProfileForm = () => {
+    const User = useSelector((state)=>state.user.currentUser)
   return (
     <Formik
-    initialValues={{name:'Yousef', email:'yousef.helly@gmail.com', password:'password1234', phone:'+201552505996'}}
+    initialValues={{name:`${User.userName}`, email:`${User.userMail}`, password:`${User.userPassword}`, phone:`${User.userPhone}`}}
     validationSchema={Yup.object({
         name:Yup.string().min(2,'Must be at least 2 characters').max(15,'Must be 15 characters or less').required('Required'),
         email:Yup.string().email('Invalid Email').required('Required'),

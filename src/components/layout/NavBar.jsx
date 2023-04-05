@@ -1,5 +1,5 @@
-import React, { useRef ,useState, Fragment } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import React, { useRef ,useState, Fragment, useEffect } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { NavLink} from 'react-router-dom'
 import {FaBars, FaSearch, FaChevronUp} from 'react-icons/fa'
 import {AiOutlineClose} from 'react-icons/ai'
@@ -9,6 +9,8 @@ import { AnimatePresence , motion, useMotionValueEvent, useScroll} from 'framer-
 import { DetailsNav } from './DetailsNav/DetailsNav';
 import { useDispatch, useSelector } from 'react-redux'
 import { openNav, closeNav } from '../../Redux/actions/AllActions'
+import { ToastContainer, Zoom } from 'react-toastify';
+import { VISITOR } from '../../Redux/Types'
 const ScrollToTopBtn = ()=>{
     const [showBtn, setShowBtn] = useState(false)
     const r = 20
@@ -47,6 +49,10 @@ export const NavBar = () => {
             setSearchIcon(true)
         }
     }
+    const navigate = useNavigate()
+    const User = useSelector((state)=>state.user.currentUser)
+    useEffect(()=>{
+        User === VISITOR?navigate('/login'):null},[])
   return (
     <React.Fragment>
         <div className='grid grid-cols-12 mx-auto overflow-x-hidden'>
@@ -90,6 +96,7 @@ export const NavBar = () => {
                         <DetailsNav/>
                 </div>
             </div>
+            <ToastContainer transition={Zoom} />
         </div>
     </React.Fragment>
   )

@@ -1,20 +1,22 @@
 import React,{useState} from 'react'
 import {AiFillHome, AiOutlineMenu, AiFillSetting} from 'react-icons/ai'
+import {MdDashboard} from 'react-icons/md'
 import {ImExit} from 'react-icons/im'
 import {FaBookReader,FaSearch} from 'react-icons/fa'
 import {AnimatePresence, motion} from 'framer-motion'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
-import { closeNav } from '../../Redux/actions/AllActions'
+import { useDispatch, useSelector } from 'react-redux';
+import { ChangeCurrentUser, closeNav } from '../../Redux/actions/AllActions'
 import { Dialog } from '@headlessui/react';
 import { UserAvatar } from './UserAvatar'
+import { ADMIN, READER, VISITOR } from '../../Redux/Types'
 
 
 export const SideNav = () => {
     const navigate = useNavigate()
     const [showLogOut,setShowLogOut] = useState(false)
-    const dispatchSideNav = useDispatch()
-    const sideNavItems = [
+    const dispatch = useDispatch()
+    const readerSideNavItems = [
         {
             icon:AiFillHome,
             text:'Home',
@@ -36,13 +38,39 @@ export const SideNav = () => {
             dest:'/reading'
         }
     ]
+    const adminSideNavItems = [
+        {
+            icon:AiFillHome,
+            text:'Home',
+            dest:'/'
+        },        
+        {
+            icon:FaSearch,
+            text:'Search',
+            dest:'/search'
+        },     
+        {
+            icon:MdDashboard,
+            text:'Dashboard',
+            dest:'/admin/dashboard'
+        }
+    ]
     const handleSettings = ()=>{
         navigate('/settings/profile')
-        dispatchSideNav(closeNav)
+        dispatch(closeNav)
     }
     const handleLogout = ()=>{
+        dispatch(closeNav)
+        dispatch(ChangeCurrentUser(VISITOR))
         navigate('/login')
-        dispatchSideNav(closeNav)
+    }
+    const User = useSelector((state)=>state.user.currentUser)
+    console.log(User);
+    const userID = (name)=>{
+        const tokens = name.split(' ');
+        const firstName = tokens[0].toLowerCase();
+        const lastName = tokens[1].slice(0,1).toUpperCase()+tokens[1].slice(1)
+        return(firstName+lastName)
     }
   return (
     <React.Fragment>
@@ -55,16 +83,27 @@ export const SideNav = () => {
             <div className='flex flex-col text-slate-50 items-center gap-5 py-5'>
             <UserAvatar/>
             <div className='text-center flex flex-col gap-1'>
-                <h4 className='text-3xl'>Yousef Helly</h4>
-                <p className='sec'>@yousefHelly</p>
+                <h4 className='text-3xl'>{User.userName}</h4>
+                <p className='sec'>@{userID(User.userName)}</p>
             </div>
             <div className='h-[1px] w-60 bg-slate-400'></div>
             <div className='self-start px-12 w-full flex flex-col gap-3'>
             {
-                sideNavItems.map((navItem,i)=>{
+                User.userType === READER ? 
+                readerSideNavItems.map((navItem,i)=>{
                     return(
                         <div key={i} className='text-lg'>
-                            <NavLink onClick={()=>dispatchSideNav(closeNav)} to={navItem.dest} className='side-sec flex items-center gap-3 rounded-full py-1  px-5'>
+                            <NavLink onClick={()=>dispatch(closeNav)} to={navItem.dest} className='side-sec flex items-center gap-3 rounded-full py-1  px-5'>
+                            <navItem.icon/>{navItem.text}
+                            </NavLink>
+                        </div>
+                    )
+                }) :
+                User.userType === ADMIN && 
+                adminSideNavItems.map((navItem,i)=>{
+                    return(
+                        <div key={i} className='text-lg'>
+                            <NavLink onClick={()=>dispatch(closeNav)} to={navItem.dest} className='side-sec flex items-center gap-3 rounded-full py-1  px-5'>
                             <navItem.icon/>{navItem.text}
                             </NavLink>
                         </div>
@@ -80,7 +119,7 @@ export const SideNav = () => {
                         </button>
                 </div>
                 <div className='text-lg'>
-                        <button onClick={()=>handleLogout()} className='side-sec flex items-center gap-3 rounded-full py-1 px-5'>
+                        <button onClick={()=>setShowLogOut(true)} className='side-sec flex items-center gap-3 rounded-full py-1 px-5'>
                             <ImExit className=''/>Log Out
                         </button>
                 </div>
@@ -96,7 +135,7 @@ export const SideNav = () => {
                 <Dialog.Title className='text-2xl'>Are you sure you want to logout ?</Dialog.Title>
                 <Dialog.Description className='sec text-lg'>you will have to login again to continue reading your favorite books.</Dialog.Description>
                 <div className='flex justify-center gap-5'>
-                    <button onClick={()=>navigate('/login')} className='btn btn-error'>Logout</button>
+                    <button onClick={()=>handleLogout()} className='btn btn-error'>Logout</button>
                     <button onClick={()=>setShowLogOut(false)} className='btn btn-ghost'>Cancel</button>
                 </div>
                 </Dialog.Panel>

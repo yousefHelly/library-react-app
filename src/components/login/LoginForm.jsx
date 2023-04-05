@@ -8,8 +8,12 @@ import { MdError } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { childVariants } from './../../animations/home';
 import { leftContainerVariants } from '../../animations/settings';
+import { Users } from '../../Data';
+import { useDispatch } from 'react-redux';
+import { ChangeCurrentUser } from '../../Redux/actions/AllActions';
 export const LoginForm = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
   return (
     <motion.div variants={leftContainerVariants} initial='init' animate='show' exit='exit' className='col-span-1 flex flex-col items-center justify-center h-screen'>
     <motion.div variants={childVariants}  className='text-start w-full px-12 lg:px-28 flex flex-col mb-8 gap-1'>
@@ -31,11 +35,17 @@ export const LoginForm = () => {
       password:Yup.string().min(8,'Must be at least 8 characters').required('Required')
     })}
     onSubmit={
-      (values)=>{
-        console.log(values);
-        navigate('/',{
-          replace:true
-        })
+      ({email,password})=>{
+        if(Users.some((user)=>user.userMail === email && user.userPassword === password)){
+          const currentUser = Users.filter((user)=>user.userMail===email && user.userPassword === password)
+          dispatch(ChangeCurrentUser(currentUser[0]));
+          navigate('/',{
+            replace:true
+          })
+        }
+        else{
+          console.log(password);
+        }
       }
     }
     >{

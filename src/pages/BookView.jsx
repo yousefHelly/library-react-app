@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { BookViewHeader } from '../components/BookView/BookViewHeader';
 import { BookViewContent } from './../components/BookView/BookViewContent';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChangeDetailsNav } from '../Redux/actions/AllActions';
 import { VIEW_BOOK } from '../Redux/Types';
 import { Books } from './../Data';

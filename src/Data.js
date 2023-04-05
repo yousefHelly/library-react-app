@@ -10,7 +10,9 @@ import catImg5 from './assets/imgs/Category-imgs/category-science-fiction.png'
 import authorImg1 from './assets/imgs/Author-imgs/Charles Dickens.jpg'
 import authorImg2 from './assets/imgs/Author-imgs/george orwell.jpg'
 import authorImg3 from './assets/imgs/Author-imgs/Scott Fitzgerald.jpg'
-import { APPROVED, AVAILABLE, REQUESTED } from './Redux/Types'
+import userImg1 from './assets/imgs/wp1901420-tame-impala-wallpapers.jpg'
+import userImg2 from './assets/imgs/naguib.webp'
+import { ADMIN, APPROVED, AVAILABLE, READER, REQUESTED } from './Redux/Types'
 
 export let Books = [
     {
@@ -209,5 +211,26 @@ export const authors = [
         desc:'Francis Scott Key Fitzgerald was an American novelist, essayist, and short story writer. He is best known for his novels depicting the flamboyance and excess of the Jazz Age',
         img:authorImg3,
         booksNum:1
+    },
+]
+
+export const Users = [
+    {
+        userType:READER,
+        userStatus:'Active',
+        userName:'Yousef Helly',
+        userMail:'yousef.helly@gmail.com',
+        userPassword:'123456789',
+        userPhone:'+201552505996',
+        userImg:userImg1
+    },
+    {
+        userType:ADMIN,
+        userStatus:'Active',
+        userName:'Mohamed Naguib',
+        userMail:'nagibo_3sl@yahoo.com',
+        userPassword:'987654321',
+        userPhone:'+201069083521',
+        userImg:userImg2
     },
 ]

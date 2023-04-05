@@ -1,4 +1,5 @@
-import { CHANGE_CURRENT_PAGE, CLOSE_SIDENAV, OPEN_SIDENAV } from '../Types';
+import { current } from '@reduxjs/toolkit';
+import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR } from '../Types';
 import { CHANGE_CURRENT_BOOK } from '../Types';
 import { HOME } from './../Types';
 
@@ -22,5 +23,14 @@ export const ChangeDetailsNav = (CurrentPage=HOME)=>{
     return{
         type:CHANGE_CURRENT_PAGE,
         current:CurrentPage
+    }
+}
+
+//CurrentUser actions
+
+export const ChangeCurrentUser = (currentUser=VISITOR)=>{
+    return{
+        type:CHANGE_CURRENT_USER,
+        user:currentUser
     }
 }

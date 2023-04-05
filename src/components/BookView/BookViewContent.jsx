@@ -4,9 +4,11 @@ import {motion} from 'framer-motion'
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { BookViewContentContainerVariants, BookViewContentTextVariants } from './../../animations/viewBook';
-import { AVAILABLE, REQUESTED } from './../../Redux/Types';
+import { ADMIN, AVAILABLE, READER, REQUESTED } from './../../Redux/Types';
+import { useSelector } from 'react-redux';
 export const BookViewContent = ({id}) => {
     const [bookState,setBookState] = useState(AVAILABLE)
+    const User = useSelector((state)=>state.user.currentUser)
     const testBook = Books[id]
     const notifyRequest = ()=>{
         setBookState(REQUESTED)
@@ -41,10 +43,13 @@ export const BookViewContent = ({id}) => {
             <motion.div variants={BookViewContentTextVariants} className='text-md font-bold'>Chapters: <span className='font-normal sec'>{testBook.BookChapters}</span></motion.div>
             <motion.div variants={BookViewContentTextVariants} className='text-md font-bold'>Edition: <span className='font-normal sec rounded-full border bg-primary text-slate-50 px-3 py-1'>PDF</span></motion.div>
             {
+                User.userType ===READER?
                 bookState===AVAILABLE?
                 <motion.button variants={BookViewContentTextVariants}  onClick={()=>notifyRequest()} className='btn btn-primary rounded-3xl capitalize'>Request book</motion.button>:
                 bookState===REQUESTED? <motion.button variants={BookViewContentTextVariants}  className='btn btn-primary btn-outline rounded-3xl capitalize'>Book Requested</motion.button>:
                 <motion.a variants={BookViewContentTextVariants} href={`${testBook.pdf}`} download><button className='btn btn-primary btn-active w-full rounded-3xl capitalize'>Read Book</button></motion.a>
+                : User.userType ===ADMIN&&
+                <motion.button variants={BookViewContentTextVariants}  className='btn btn-primary rounded-3xl capitalize'>Modify book</motion.button>
             }
         <ToastContainer transition={Zoom} />
         </motion.div>
