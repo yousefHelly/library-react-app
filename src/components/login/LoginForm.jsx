@@ -11,9 +11,18 @@ import { leftContainerVariants } from '../../animations/settings';
 import { Users } from '../../Data';
 import { useDispatch } from 'react-redux';
 import { ChangeCurrentUser } from '../../Redux/actions/AllActions';
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import { AES } from 'crypto-js';
+import { SECRET } from './../../Redux/Types';
 export const LoginForm = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const loginError = ()=>{
+      toast.error('Invalid Email or Password',{
+        theme:'dark',
+        position:'top-left'
+      })
+    }
   return (
     <motion.div variants={leftContainerVariants} initial='init' animate='show' exit='exit' className='col-span-1 flex flex-col items-center justify-center h-screen'>
     <motion.div variants={childVariants}  className='text-start w-full px-12 lg:px-28 flex flex-col mb-8 gap-1'>
@@ -37,14 +46,18 @@ export const LoginForm = () => {
     onSubmit={
       ({email,password})=>{
         if(Users.some((user)=>user.userMail === email && user.userPassword === password)){
+          //get the Current User Info and encrypt it and save it in the sessionStorage
           const currentUser = Users.filter((user)=>user.userMail===email && user.userPassword === password)
+          const decryptedUser = AES.encrypt(JSON.stringify(currentUser[0]),SECRET).toString()
+          sessionStorage.setItem('User',decryptedUser)          
           dispatch(ChangeCurrentUser(currentUser[0]));
           navigate('/',{
             replace:true
           })
         }
         else{
-          console.log(password);
+          //show Error Msg in a toast
+          loginError()
         }
       }
     }
@@ -66,6 +79,7 @@ export const LoginForm = () => {
     }
     </Formik>
     </div>
+    <ToastContainer transition={Zoom} />
   </motion.div>
   )
 }

@@ -61,6 +61,7 @@ export const SideNav = () => {
     }
     const handleLogout = ()=>{
         dispatch(closeNav)
+        sessionStorage.removeItem('User')
         dispatch(ChangeCurrentUser(VISITOR))
         navigate('/login')
     }

@@ -9,9 +9,10 @@ import { AnimatePresence , motion, useMotionValueEvent, useScroll} from 'framer-
 import { DetailsNav } from './DetailsNav/DetailsNav';
 import { useDispatch, useSelector } from 'react-redux'
 import { openNav, closeNav } from '../../Redux/actions/AllActions'
-import { ToastContainer, Zoom } from 'react-toastify';
-import { VISITOR } from '../../Redux/Types'
-const ScrollToTopBtn = ()=>{
+import CryptoJS,{ AES } from 'crypto-js'
+import { SECRET } from './../../Redux/Types';
+import { ChangeCurrentUser } from './../../Redux/actions/AllActions';
+const ScrollToTopBtn = ({currentPage})=>{
     const [showBtn, setShowBtn] = useState(false)
     const r = 20
     const circle = useRef(0)
@@ -23,7 +24,7 @@ const ScrollToTopBtn = ()=>{
     })
     return(
         <React.Fragment>
-        <motion.div whileHover={{scale:1.25}} whileTap={{scale:0.9}} className='fixed right-4 xl:right-[22rem] bottom-4 z-10'>
+        <motion.div whileHover={{scale:1.25}} whileTap={{scale:0.9}} className={`fixed right-4 ${currentPage!=null?'xl:right-[22rem]':''} bottom-4 z-10`}>
         <svg width='50' height='50' className='-rotate-90'>
             <motion.circle ref={circle} className='fill-none stroke-secondary stroke-2' style={{strokeDasharray:`${2*Math.PI*20}px`,strokeDashoffset:`${circumference}px`}} r={`${r}px`} cx='25' cy='25'></motion.circle>
         </svg>
@@ -41,7 +42,7 @@ export const NavBar = () => {
     const searchInput = useRef()
     const [searchIcon,setSearchIcon] = useState(true)
     const sideNav = useSelector((state)=>state.nav.sideNavOpen)
-    const dispatchSideNav = useDispatch()
+    const dispatch = useDispatch()
     const searchText =()=>{
         if(searchInput.current.value != ''){
             setSearchIcon(false)
@@ -50,16 +51,24 @@ export const NavBar = () => {
         }
     }
     const navigate = useNavigate()
-    const User = useSelector((state)=>state.user.currentUser)
     useEffect(()=>{
-        User === VISITOR?navigate('/login'):null},[])
+        //if there is a user session decrypt and dispatch User data else navigate to login 
+        if(sessionStorage.getItem('User')){
+            const encryptedUser =  sessionStorage.getItem('User');
+            const User = JSON.parse(AES.decrypt(encryptedUser,SECRET).toString(CryptoJS.enc.Utf8))
+            dispatch(ChangeCurrentUser(User))
+        }else{
+            navigate('/login')
+        }
+    },[])
+    const currentPage = useSelector((state)=>state.detailsNav.currentBook)
   return (
     <React.Fragment>
         <div className='grid grid-cols-12 mx-auto overflow-x-hidden'>
-            <div className='relative w-full px-10 col-span-12 xl:col-span-9'>
+            <div className={`relative w-full px-10 col-span-12 ${currentPage!=null?' xl:col-span-9':''}`}>
                 <div className='flex h-[80px] items-center justify-between'>
                     <div className='flex h-full items-center'>
-                        <button className='self-center'  onClick={()=>dispatchSideNav(openNav)}>    
+                        <button className='self-center'  onClick={()=>dispatch(openNav)}>    
                         {
                             sideNav?
                             <AiOutlineClose className='text-xl mr-5 hover:text-primary cursor-pointer'/> 
@@ -80,7 +89,7 @@ export const NavBar = () => {
                     <AnimatePresence>
                         {
                             sideNav &&
-                            <Dialog static  as={motion.div} className='modal-bg' open={sideNav} onClose={()=>dispatchSideNav(closeNav)}>
+                            <Dialog static  as={motion.div} className='modal-bg' open={sideNav} onClose={()=>dispatch(closeNav)}>
                             <Dialog.Panel>
                                 <SideNav/>
                             </Dialog.Panel>
@@ -88,15 +97,17 @@ export const NavBar = () => {
                         }
                     </AnimatePresence>
                 </div>
-                <ScrollToTopBtn/>
+                <ScrollToTopBtn currentPage = {currentPage}/>
                 <Outlet/>
             </div>
-            <div className='hidden xl:block col-span-3 relative'>
-                <div className='w-1/4 h-screen bg-secondary fixed'>
-                        <DetailsNav/>
-                </div>
-            </div>
-            <ToastContainer transition={Zoom} />
+                {
+                    currentPage!=null&&
+                    <div className='hidden xl:block col-span-3 relative'>
+                    <div className='w-1/4 h-screen bg-secondary fixed'>
+                            <DetailsNav/>
+                    </div>
+                    </div>
+                }
         </div>
     </React.Fragment>
   )

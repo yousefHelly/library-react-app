@@ -1,3 +1,5 @@
+//Secret Key 
+export const SECRET = 'f/J;k3a7")k9[)$Y'
 //Book Status
 export const AVAILABLE = 'AVAILABLE'
 export const REQUESTED = 'REQUESTED'

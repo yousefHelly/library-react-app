@@ -11,7 +11,7 @@ export const Categories = () => {
   useEffect(()=>{document.title = 'Library | Categories'},[])
   const dispatch = useDispatch()
   function randomNoRepeats(array) {
-    const copy = array.slice(0);
+    let copy = array.slice(0);
     return function() {
       if (copy.length < 1) { copy = array.slice(0); }
       const index = Math.floor(Math.random() * copy.length);

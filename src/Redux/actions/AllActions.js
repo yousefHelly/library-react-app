@@ -1,4 +1,3 @@
-import { current } from '@reduxjs/toolkit';
 import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR } from '../Types';
 import { CHANGE_CURRENT_BOOK } from '../Types';
 import { HOME } from './../Types';

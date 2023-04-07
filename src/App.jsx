@@ -18,6 +18,9 @@ import { SettingsAccountStatus } from "./pages/Settings/SettingsAccountStatus";
 import { CategoryAllBooks } from "./pages/Categories/CategoryAllBooks";
 import { Authors } from './pages/Authors/Authors';
 import { AuthorProfile } from "./pages/Authors/AuthorProfile";
+import { Admin } from './pages/Admin/Admin';
+import { AdminAllBooks } from "./pages/Admin/AdminAllBooks";
+import { AddEditBook } from './components/Admin/AddEditBook';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +45,12 @@ const router = createBrowserRouter(
           <Route path="search-history" element={<SettingsHistory/>} />
           <Route path="profile" element={<SettingsProfile/>}/>
           <Route path="account-status" element={<SettingsAccountStatus/>} />
+        </Route>
+        <Route path="/admin" element = {<Admin/>}>
+          <Route path="dashboard" element={<SettingsHistory/>} />
+          <Route path="all-books" element={<AdminAllBooks/>} />
+          <Route path="add-edit-book/" element={<AddEditBook/>} />
+          <Route path="add-edit-book/:id" element={<AddEditBook/>} />
         </Route>
       </Route>
       </React.Fragment>

@@ -9,12 +9,11 @@ import { useSelector } from 'react-redux';
 export const SettingsAccountStatus = () => {
   const User = useSelector((state)=>state.user.currentUser)
   const navigate = useNavigate()
-  console.log(User);
   useEffect(()=>{
     if(User.userType === ADMIN){
       navigate('/settings/profile')
     }
-  },[])
+  },[User])
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col gap-6'>
         <motion.h4 variants={childVariants} className='text-2xl'>Account Status</motion.h4>

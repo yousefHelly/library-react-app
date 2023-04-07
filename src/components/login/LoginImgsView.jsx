@@ -38,7 +38,7 @@ export const LoginImgsView = () => {
   const [currentBook,setCurrentBook] = useState('Oliver Twist')
   return (
     <div  className='w-full h-full bg-primary flex justify-center items-center'>
-    <div className='bg-secondary/75 backdrop-blur-sm p-10 z-10 md:w-[100vh] lg:w-auto rounded-2xl text-center md:text-start'>
+    <div className='bg-secondary/75 backdrop-blur-sm p-10 z-10 md:w-[100vh] lg:w-auto md:rounded-2xl text-center md:text-start'>
       <h3 className='text-3xl text-slate-50 font-bold max-w-sm'>Hundreds of books are waiting for you 🤞</h3>
       <h4 className='text-3xl mt-2 text-slate-50 font-bold max-w-sm'>Login Now</h4>
       <div className='relative py-14 h-[28rem]'>    

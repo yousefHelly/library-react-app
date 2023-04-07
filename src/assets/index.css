@@ -3,6 +3,11 @@
 @tailwind utilities;
 @import url('https://fonts.cdnfonts.com/css/tt-norms-pro');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&display=swap');
+
+:root{
+	--main-color:#4A80F0;
+}
+
 body {
 	font-family: 'TT Norms Pro', sans-serif;
 }
@@ -143,4 +148,24 @@ a.settings-side-sec.active {
 .SliderThumb:focus {
 	outline: none;
 	box-shadow: 0 0 0 5px var(--blackA8);
+}
+
+/*bookHolder Direction Aware Hover Effect*/
+span .bookHolder:not(.active):before{
+	content: '';
+	position: absolute;
+	block-size: 100%;
+	inset-block-start: 100%;
+	inline-size: 100%;
+	inset-inline-start: -100%;
+	background-color:  var(--main-color);
+	z-index: -1;
+	transition: 0.3s ease-in-out;
+}
+span .bookHolder:not(span .bookHolder.active):hover::before{
+	inset-block-start:0;
+	inset-inline-start: 0;
+}
+span:has(+span:hover) .bookHolder::before{
+	inset-inline-start: 100%;
 }

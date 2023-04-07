@@ -4,11 +4,18 @@ import pattern from '../assets/imgs/pattern_waves-secondary.png'
 import { LoginImgsView } from '../components/login/LoginImgsView'
 import { rightContainerVariants } from '../animations/settings'
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom'
 
 
 export const Login = () => {
+  const navigate = useNavigate()
   useEffect(()=>{
-    document.title = 'Library | Login'
+    //if there is a user session navigate to home page 
+    if(sessionStorage.getItem('User')){
+      navigate('/')
+    }else{
+      document.title = 'Library | Login'
+    }
   },[])
   return (
     <div className='mx-auto grid lg:grid-cols-2'>
