@@ -3,6 +3,7 @@ import { CurrentReducer } from "./CurrentBookReducer";
 import { NavReducer } from './NavReducer';
 import { DetailsNavReducer } from './DetailsNavReducer';
 import { CurrentUserReducer } from "./CurrentUserReducer";
+import { BooksDataReducer } from "./BooksDataReducer";
 
 export const RootReducer = 
     combineReducers(
@@ -10,6 +11,7 @@ export const RootReducer =
             nav:NavReducer,
             current: CurrentReducer,
             detailsNav:DetailsNavReducer,
-            user:CurrentUserReducer
+            user:CurrentUserReducer,
+            booksData:BooksDataReducer
         }
     )

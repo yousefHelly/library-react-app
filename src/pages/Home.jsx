@@ -1,45 +1,54 @@
-import React,{useEffect} from 'react'
+import React,{useEffect, useState} from 'react'
 import {motion} from 'framer-motion'
 import { DetailedBook } from './../components/home/DetailedBook';
 import { BookGridView } from '../components/home/BookGridView';
 import { childVariants, ContainerVariants, cardChildVariants } from './../animations/home';
-import { Books } from './../Data';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HOME } from './../Redux/Types';
-import { ChangeDetailsNav } from '../Redux/actions/AllActions';
+import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../Redux/actions/AllActions';
 
 export const Home = () => {
   const dispatch = useDispatch()
-  useEffect(
-    ()=>{
+  const [Books,setBooks] = useState([])
+    useEffect(()=>{
       document.title = 'Library | Home'
+      dispatch(GetAllBooks())
       dispatch(ChangeDetailsNav(HOME))
-    }  
-  ,)
+    },[])
+    const booksData = useSelector((state)=>state.booksData.Books)
+    useEffect(()=>{
+      setBooks(booksData.books)
+    },[booksData])
+    if(Books&&Books.length>0){
+      dispatch(ChangeCurrent(Books[0].book_id)) 
+    }
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='my-5 flex flex-col gap-5'>
         <motion.h4 variants={childVariants} className='text-xl font-bold'>For you</motion.h4>
         <motion.div variants={ContainerVariants} className='suggested books grid sm:mx-20 md:mx-0 lg:grid-cols-2 gap-5'>
-
           {
+            Books?
             Books.map((book,i)=>{
                 while(i<2){
                   return(
-                    <motion.span key={i} variants={childVariants}><DetailedBook book={book} index={book.BookId}/></motion.span>
+                    <DetailedBook id={book.book_id} book={book} index={book.book_id}/>
                   )
                 }
 
-            })
+            }):
+            <h3>No Books Available</h3>
           }
         </motion.div>
         <motion.h4  variants={childVariants} className='text-xl mt-5 font-bold'>All Books</motion.h4>
-        <motion.div variants={ContainerVariants} className='suggested books grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
+        <motion.div variants={childVariants} className='suggested books grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
           {
+            Books?
             Books.map((book,i)=>{
               return(
-                <motion.span key={i} variants={cardChildVariants}><BookGridView book={book} index={book.BookId}/></motion.span>
+              <BookGridView key={book.book_id} book={book} index={book.book_id}/>
               )
-            })
+            }):
+            <h3>No Books Available</h3>
           }
         </motion.div>
     </motion.div>

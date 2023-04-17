@@ -151,7 +151,7 @@ a.settings-side-sec.active {
 }
 
 /*bookHolder Direction Aware Hover Effect*/
-span .bookHolder:not(.active):before{
+.bookHolder:not(.active):before{
 	content: '';
 	position: absolute;
 	block-size: 100%;
@@ -162,10 +162,10 @@ span .bookHolder:not(.active):before{
 	z-index: -1;
 	transition: 0.3s ease-in-out;
 }
-span .bookHolder:not(span .bookHolder.active):hover::before{
+.bookHolder:not(.bookHolder.active):hover::before{
 	inset-block-start:0;
 	inset-inline-start: 0;
 }
-span:has(+span:hover) .bookHolder::before{
+.bookHolder:has(+span:hover)::before{
 	inset-inline-start: 100%;
 }

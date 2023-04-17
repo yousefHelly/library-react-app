@@ -67,7 +67,7 @@ export const NavBar = () => {
         <div className='grid grid-cols-12 mx-auto overflow-x-hidden'>
             <div className={`relative w-full px-10 col-span-12 ${currentPage!=null?' xl:col-span-9':''}`}>
                 <div className='flex h-[80px] items-center justify-between'>
-                    <div className='flex h-full items-center'>
+                    <div className='flex h-full items-center justify-center'>
                         <button className='self-center'  onClick={()=>dispatch(openNav)}>    
                         {
                             sideNav?
@@ -76,7 +76,7 @@ export const NavBar = () => {
                             <FaBars className='text-xl mr-5 hover:text-primary cursor-pointer'/> 
                         } 
                         </button>
-                        <ul className='flex gap-5 lg:gap-16 md:px-12 lg:text-lg md:border-b-[0.25rem] border-zinc-100'>
+                        <ul className='flex gap-8 lg:gap-16 md:px-12 lg:text-lg md:border-b-[0.25rem] border-zinc-100'>
                             <li className='py-3'><NavLink className='sec transition' to='/'>Books</NavLink></li>
                             <li className='py-3'><NavLink className='sec transition' to='/categories'>Categories</NavLink></li>
                             <li className='py-3'><NavLink className='sec transition' to='/authors'>Authors</NavLink></li>

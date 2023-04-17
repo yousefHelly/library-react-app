@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DetailsNavVariantsContainer } from '../../../animations/detailsNav';
 import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'react-router-dom';
-const categories = ['Social Novel','Horror','Short Story','Depression']
-const authors = ['Charles Dickens','George Orwell','Scott Fitzgerald']
+import { cats, authors } from '../../../Data';
 
 export const DetailsNavSearch = () => {
     const [searchParams,setSearchParams] = useSearchParams()
@@ -15,7 +14,7 @@ export const DetailsNavSearch = () => {
     const [AuthorsAll,setAuthorsAll] = useState(true)
     const AuthorsAllRef = useRef(0)
     //All Publication Date state
-    const [PDVal,setPDVal] = useState({0:1840,1:2002})
+    const [PDVal,setPDVal] = useState({0:1800,1:2023})
     //make All in Category is default 
     useEffect(()=>{
         catAllRef.current.checked = catAll
@@ -44,8 +43,13 @@ export const DetailsNavSearch = () => {
             searchParams.get(`${type}`)!='All'&&searchParams.get(`${type}`)!=''&&checkedFields.push(searchParams.get(`${type}`).split('&'))
             //filtering all repeated values
             checkedFields = [...new Set(...checkedFields)]
-            //removing All from either category or author based on the name parameter
-            categories.includes(name)?setCatAll(false):setAuthorsAll(false)
+            //uncheck 'All' checkbox from either category or author based on the name parameter
+            const catsNames = []
+            cats.map((cat)=>{
+                catsNames.push(cat.name)
+                return catsNames
+            })
+            catsNames.includes(name)?setCatAll(false):setAuthorsAll(false)
             //tracking if user checked or unchecked the input 
             if(checked){
                 //adding the filed if it's not found in the checkedFields array
@@ -82,16 +86,16 @@ export const DetailsNavSearch = () => {
                         <span className="label-text text-slate-50">All</span> 
                         </label>
                         {
-                            categories.map((category)=>{
+                            cats.map((category)=>{
                                 //if all category is selected uncheck others
                                 const ref = useRef(0)
                                 useEffect(()=>{
                                     catAll?ref.current.checked = false : null
                                 },[catAll])
                                 return(
-                                    <label key={category} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                                    <input ref={ref} onChange={(e)=>handleClicked(e.target.checked,e.target.nextSibling.textContent,'category')} type="checkbox" className="checkbox checkbox-primary" />
-                                    <span className="label-text text-slate-50">{category}</span> 
+                                    <label key={category.name} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
+                                    <input ref={ref} onChange={(e)=>handleClicked(e.target.checked,category.name,'category')} type="checkbox" className="checkbox checkbox-primary" />
+                                    <span className="label-text text-slate-50">{category.name}</span> 
                                     </label>
                                 )
                             })
@@ -114,9 +118,9 @@ export const DetailsNavSearch = () => {
                                     AuthorsAll?ref2.current.checked = false : null
                                 },[AuthorsAll])
                                 return(
-                                    <label key={author} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                                    <input ref={ref2} onChange={(e)=>handleClicked(e.target.checked,e.target.nextSibling.textContent,'author')}  type="checkbox" className="checkbox checkbox-primary" />
-                                    <span className="label-text text-slate-50">{author}</span> 
+                                    <label key={author.name} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
+                                    <input ref={ref2} onChange={(e)=>handleClicked(e.target.checked,author.name,'author')}  type="checkbox" className="checkbox checkbox-primary" />
+                                    <span className="label-text text-slate-50">{author.name}</span> 
                                     </label>
                                 )
                             })
@@ -126,7 +130,7 @@ export const DetailsNavSearch = () => {
                 <div className='h-[1px] bg-slate-400'></div>
                 <div className='flex flex-col gap-2'>
                 <h4 className='text-xl pb-3'>Publication Date</h4>
-                <Slider.Root onValueCommit={(val)=>handleClicked(val,'Date','slider')} onValueChange={(val)=>setPDVal({0:val[0],1:val[1]})} className="SliderRoot relative flex items-center h-[20px]" defaultValue={[1840,2002]} min={1840} max={2002} step={1} minStepsBetweenThumbs={1} aria-label="Volume">
+                <Slider.Root onValueCommit={(val)=>handleClicked(val,'Date','slider')} onValueChange={(val)=>setPDVal({0:val[0],1:val[1]})} className="SliderRoot relative flex items-center h-[20px]" defaultValue={[1800,2023]} min={1800} max={2023} step={1} minStepsBetweenThumbs={1} aria-label="Volume">
                     <Slider.Track className="bg-red-500  relative rounded-full flex-1 h-[3px]">
                         <Slider.Range className="SliderRange bg-primary absolute rounded-full h-full" />
                     </Slider.Track>
@@ -135,8 +139,8 @@ export const DetailsNavSearch = () => {
                 </Slider.Root>
                 <div className='flex flex-col'>
                 <div className='flex justify-between'>
-                <p>1840</p>
-                <p>2002</p>
+                <p>1800</p>
+                <p>2023</p>
                 </div>
                 <div className='flex pt-4 gap-4 items-center'>
                 <p>From Date</p>

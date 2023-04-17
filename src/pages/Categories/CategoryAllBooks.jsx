@@ -1,22 +1,32 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { childVariants, ContainerVariants, cardChildVariants } from './../../animations/home';
 import { useParams } from 'react-router-dom';
 import { BookGridView } from './../../components/home/BookGridView';
-import { Books } from './../../Data';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HOME } from '../../Redux/Types';
-import { ChangeDetailsNav } from '../../Redux/actions/AllActions';
+import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../../Redux/actions/AllActions';
 
 export const CategoryAllBooks = () => {
     const {category} = useParams()
     const dispatch = useDispatch()
+    const [Books,setBooks] = useState([])
+    useEffect(()=>{
+      dispatch(GetAllBooks())
+    },[])
+    const BooksData = useSelector((state)=>state.booksData.Books)
+    useEffect(()=>{
+    setBooks(BooksData.books)
+    },[BooksData])
     useEffect(
       ()=>{
         document.title = 'Library | Home'
         dispatch(ChangeDetailsNav(HOME))
       }  
     ,)
+    if(Books.length>0){
+      dispatch(ChangeCurrent(Books[0].book_id)) 
+    }
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='my-5 flex flex-col gap-5'>
       <motion.h4 variants={childVariants} className='text-xl font-bold'>All {category} books</motion.h4>
@@ -24,7 +34,7 @@ export const CategoryAllBooks = () => {
       {
         Books.map((book,i)=>{
           return(
-            book.BookCategory===category&&<motion.span key={i} variants={cardChildVariants}><BookGridView book={book} index={book.BookId}/></motion.span>
+            book.field===category&&<BookGridView book={book} index={book.book_id}/>
           )
         })
       }

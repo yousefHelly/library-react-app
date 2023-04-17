@@ -1,39 +1,75 @@
-import React from 'react'
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion';
 import { ContainerVariants, cardChildVariants, childVariants } from '../../animations/home';
-import { plotTextVariants } from '../../animations/detailsNav';
-import { Books } from '../../Data';
-import { BookGridView } from '../../components/home/BookGridView';
 import { BookGridViewSearch } from '../../components/Search/BookGridViewSearch';
 import {BiBookAdd} from 'react-icons/bi'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Dialog } from '@headlessui/react';
+import { ToastContainer, Zoom, toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetAllBooks } from '../../Redux/actions/AllActions';
+import { AdminViewAll } from '../../components/Admin/AdminViewAll';
 export const AdminAllBooks = () => {
+    const dispatch = useDispatch()
+    const [Books,setBooks] = useState([])
+    const [deleteDialog,setDeleteDialog] = useState(false)
+    const [deletedBook,setDeletedBook] = useState({})
+    useEffect(()=>{
+            dispatch(GetAllBooks())
+    },[])
+    const BooksData = useSelector((state)=>state.booksData.Books)
+    useEffect(()=>{
+        setBooks(BooksData.books)
+    },[BooksData])
+    const showDeleteDialog=(book)=>{
+        setDeleteDialog(true)
+        setDeletedBook(book)
+    }
+    const handleDelete = async()=>{
+        const deleteBook =  await axios.delete(`http://localhost:4000/books/${deletedBook.book_id}`)
+        const res =  await deleteBook.data
+        setDeleteDialog(false)
+        console.log(res.msg);
+        toast.success(res.msg,{
+            theme:'dark',
+            position:'top-right'
+        })
+    }
+
   return (
-    <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col gap-6'>
-        <motion.h4 variants={childVariants} className='text-2xl'>All Books</motion.h4>
-        <motion.div variants={ContainerVariants} className='suggested books grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
-            <motion.span key={'addNew'} variants={cardChildVariants} className=' hover:bg-primary hover:text-slate-50 flex items-center justify-center transition duration-300 pb-4'>
-                <Link to={`/admin/add-edit-book`}>
-                    <div className={`relative flex p-3 rounded-xl transition duration-300 flex-col gap-3 h-72 items-center justify-center  cursor-pointer hover:bg-primary hover:text-slate-50`}>
-                        <h3 className='text-xl font-bold'><BiBookAdd className='text-8xl text-secondary'/></h3>
-                        <p className=''>New Book</p>
-                    </div>
-                </Link>
-            </motion.span>
+    <React.Fragment>
+        <AdminViewAll type={'book'} addIcon={<BiBookAdd/>}>
             {
                 Books.map((book,i)=>{
                 return(
                     <motion.span key={i} variants={cardChildVariants} className=' hover:bg-primary hover:text-slate-50 transition duration-300 pb-4'>
-                    <BookGridViewSearch book={book} index={book.BookId}/>
+                    <BookGridViewSearch book={book} index={book.book_id}/>
                     <div className='w-full flex gap-4 items-center justify-center'>
-                    <Link to={`/admin/add-edit-book/${book.BookId}`} className='btn btn-secondary'>edit</Link>
-                    <button className='btn btn-error'>Delete</button>
+                    <Link to={`/admin/add-edit-book/${book.book_id}`} className='btn btn-secondary'>edit</Link>
+                    <button onClick={()=>showDeleteDialog(book)} className='btn btn-error'>Delete</button>
                     </div>
                     </motion.span>
                 )
                 })
             }
-        </motion.div>
-    </motion.div>
+        </AdminViewAll>
+        <AnimatePresence>
+        {
+            deleteDialog &&
+            <Dialog static className='modal-bg' open={deleteDialog} onClose={()=>setDeleteDialog(false)}>
+            <Dialog.Panel key='logout' as={motion.div} initial={{y:'-100%',x:'-50%',opacity:0}} animate={{y:'-50%',x:'-50%',opacity:1}} exit={{y:'-100%',x:'-50%',opacity:0}} className='fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary p-12 rounded-xl shadow-md flex justify-center items-center gap-8 flex-col text-slate-50'>
+            <Dialog.Title className='text-2xl'>Are you sure you want to Delete {deletedBook.bookName} ?</Dialog.Title>
+            <Dialog.Description className='sec text-lg'>you will delete all data and chapters for this book.</Dialog.Description>
+            <div className='flex justify-center gap-5'>
+                <button onClick={()=>handleDelete()} className='btn btn-error'>Delete</button>
+                <button onClick={()=>setDeleteDialog(false)} className='btn btn-ghost'>Cancel</button>
+            </div>
+            </Dialog.Panel>
+            </Dialog>
+        }
+        </AnimatePresence>
+    <ToastContainer transition={Zoom}/>
+    </React.Fragment>
   )
 }

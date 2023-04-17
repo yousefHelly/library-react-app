@@ -19,7 +19,7 @@ export const Authors = () => {
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='my-5 flex flex-col gap-5'>
     <motion.h4 variants={childVariants} className='text-xl font-bold'>All Authors</motion.h4>
-    <motion.div variants={ContainerVariants} initial='init' animate='show' className='grid grid-cols-2 md:grid-cols-3 gap-8 lg:grid-cols-4'>
+    <motion.div variants={ContainerVariants} initial='init' animate='show' className='grid grid-cols-2 md:grid-cols-4 gap-8 lg:grid-cols-4'>
     {
       authors.map((author)=>{
         return(

@@ -66,7 +66,6 @@ export const SideNav = () => {
         navigate('/login')
     }
     const User = useSelector((state)=>state.user.currentUser)
-    console.log(User);
     const userID = (name)=>{
         const tokens = name.split(' ');
         const firstName = tokens[0].toLowerCase();
@@ -90,7 +89,7 @@ export const SideNav = () => {
             <div className='h-[1px] w-60 bg-slate-400'></div>
             <div className='self-start px-12 w-full flex flex-col gap-3'>
             {
-                User.userType === READER ? 
+                User.type === READER ? 
                 readerSideNavItems.map((navItem,i)=>{
                     return(
                         <div key={i} className='text-lg'>
@@ -100,7 +99,7 @@ export const SideNav = () => {
                         </div>
                     )
                 }) :
-                User.userType === ADMIN && 
+                User.type === ADMIN && 
                 adminSideNavItems.map((navItem,i)=>{
                     return(
                         <div key={i} className='text-lg'>

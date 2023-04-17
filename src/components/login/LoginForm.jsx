@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {FcGoogle} from 'react-icons/fc'
 import {FaFacebook} from 'react-icons/fa'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
@@ -8,20 +8,36 @@ import { MdError } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { childVariants } from './../../animations/home';
 import { leftContainerVariants } from '../../animations/settings';
-import { Users } from '../../Data';
 import { useDispatch } from 'react-redux';
 import { ChangeCurrentUser } from '../../Redux/actions/AllActions';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import { AES } from 'crypto-js';
+import {ImEye,ImEyeBlocked} from 'react-icons/im'
 import { SECRET } from './../../Redux/Types';
+import axios from 'axios';
 export const LoginForm = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const loginError = ()=>{
-      toast.error('Invalid Email or Password',{
+    const [showPassword,setShowPassword] = useState(false)
+    const loginError = (msg)=>{
+      toast.error(msg,{
         theme:'dark',
         position:'top-left'
       })
+    }
+    const LogIn = ({login,message,user})=>{
+      console.log({login,message,user});
+      if (login){
+        console.log(user);
+        navigate('/',{
+          replace:true
+        })
+        const decryptedUser = AES.encrypt(JSON.stringify(user),SECRET).toString()
+        sessionStorage.setItem('User',decryptedUser)          
+        dispatch(ChangeCurrentUser(user));
+      }else{
+        loginError(message)
+      }
     }
   return (
     <motion.div variants={leftContainerVariants} initial='init' animate='show' exit='exit' className='col-span-1 flex flex-col items-center justify-center h-screen'>
@@ -45,31 +61,31 @@ export const LoginForm = () => {
     })}
     onSubmit={
       ({email,password})=>{
-        if(Users.some((user)=>user.userMail === email && user.userPassword === password)){
+          axios.post("http://localhost:4000/login",{
+            email:email,
+            password:password
+          }).then((res)=>LogIn(res.data)).catch((err)=>loginError(err.response.data.errors[0].msg))
           //get the Current User Info and encrypt it and save it in the sessionStorage
-          const currentUser = Users.filter((user)=>user.userMail===email && user.userPassword === password)
-          const decryptedUser = AES.encrypt(JSON.stringify(currentUser[0]),SECRET).toString()
-          sessionStorage.setItem('User',decryptedUser)          
-          dispatch(ChangeCurrentUser(currentUser[0]));
-          navigate('/',{
-            replace:true
-          })
-        }
-        else{
           //show Error Msg in a toast
-          loginError()
-        }
       }
     }
     >{
       ({errors,touched})=>{
         return(
-          <Form className='flex flex-col w-full gap-2'>
+          <Form className='flex flex-col w-full gap-2 relative'>
             <label className='font-bold' htmlFor='email'>Email</label>
             <Field className={`input input-bordered rounded-full focus:input-primary ${errors.email&&touched.email?'input-error':''}`} name='email' id='email' type='email'/>
             <ErrorMessage component='div' name='email'>{msg=>{return(<React.Fragment><span className='text-error text-sm flex gap-3 items-center'><MdError/>{msg}</span></React.Fragment>)}}</ErrorMessage>
             <label className='font-bold' htmlFor='password'>Password</label>
-            <Field className={`input input-bordered rounded-full focus:input-primary ${errors.password&&touched.password?'input-error':''}`} name='password' id='password' type='password'/>
+            <span className='relative w-full'>           
+            <Field className={`input input-bordered rounded-full w-full focus:input-primary ${errors.password&&touched.password?'input-error':''}`} name='password' id='password' type={`${showPassword?'text':'password'}`}/>
+            {
+              showPassword?
+              <ImEyeBlocked onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
+              :
+              <ImEye onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
+            }
+            </span>
             <ErrorMessage component='div' name='password'>{msg=>{return(<React.Fragment><span className='text-error text-sm flex gap-3 items-center'><MdError/>{msg}</span></React.Fragment>)}}</ErrorMessage>
             <Link className='text-primary font-bold text-sm self-end mt-2'>Forgot Password?</Link>
             <input className='btn btn-primary capitalize my-4 rounded-full' type="submit" value='Login'/>

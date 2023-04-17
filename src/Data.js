@@ -10,9 +10,7 @@ import catImg5 from './assets/imgs/Category-imgs/category-science-fiction.png'
 import authorImg1 from './assets/imgs/Author-imgs/Charles Dickens.jpg'
 import authorImg2 from './assets/imgs/Author-imgs/george orwell.jpg'
 import authorImg3 from './assets/imgs/Author-imgs/Scott Fitzgerald.jpg'
-import userImg1 from './assets/imgs/wp1901420-tame-impala-wallpapers.jpg'
-import userImg2 from './assets/imgs/naguib.webp'
-import { ADMIN, APPROVED, AVAILABLE, READER, REQUESTED } from './Redux/Types'
+import {APPROVED, AVAILABLE, REQUESTED } from './Redux/Types'
 
 export let Books = [
     {
@@ -124,6 +122,21 @@ export let Books = [
         BookPlot:'this is plot for Great Expectations book',
         BookPublicationDate:'2000',
         status:APPROVED,
+        chapters:[
+            {
+                title:'Chapter 1 : Intro to the book',
+                description:'this is intro to the book this is intro to the book this is intro to the book this is intro to the book '
+            },{
+                title:'Chapter 2 : Intro to the book',
+                description:'this is intro to the book this is intro to the book this is intro to the book this is intro to the book '
+            },{
+                title:'Chapter 3 : Intro to the book',
+                description:'this is intro to the book this is intro to the book this is intro to the book this is intro to the book '
+            },{
+                title:'Chapter 4 : Intro to the book',
+                description:'this is intro to the book this is intro to the book this is intro to the book this is intro to the book '
+            }
+        ],
         pdf:'https://www.globalgreyebooks.com/ebooks1/charles-dickens/great-expectations/great-expectations.pdf'
     }
 ]
@@ -211,26 +224,5 @@ export const authors = [
         desc:'Francis Scott Key Fitzgerald was an American novelist, essayist, and short story writer. He is best known for his novels depicting the flamboyance and excess of the Jazz Age',
         img:authorImg3,
         booksNum:1
-    },
-]
-
-export const Users = [
-    {
-        userType:READER,
-        userStatus:'Active',
-        userName:'Yousef Helly',
-        userMail:'yousef.helly@gmail.com',
-        userPassword:'123456789',
-        userPhone:'+201552505996',
-        userImg:userImg1
-    },
-    {
-        userType:ADMIN,
-        userStatus:'Active',
-        userName:'Mohamed Naguib',
-        userMail:'nagibo_3sl@yahoo.com',
-        userPassword:'987654321',
-        userPhone:'+201069083521',
-        userImg:userImg2
     },
 ]

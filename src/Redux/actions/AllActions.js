@@ -1,4 +1,5 @@
-import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR } from '../Types';
+import axios from 'axios';
+import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR, GET_ALL_BOOKS, GET_SEARCHED_BOOKS } from '../Types';
 import { CHANGE_CURRENT_BOOK } from '../Types';
 import { HOME } from './../Types';
 
@@ -31,5 +32,22 @@ export const ChangeCurrentUser = (currentUser=VISITOR)=>{
     return{
         type:CHANGE_CURRENT_USER,
         user:currentUser
+    }
+}
+
+//APIs actions
+
+export const GetAllBooks = ()=>{
+    return async(dispatch)=>{
+        const booksData = await axios.get(`http://localhost:4000/bookspage/0`)
+        dispatch({type:GET_ALL_BOOKS,Books:booksData.data})
+    }
+}
+export const GetSearchedBooks = (currentUser,searchValue='')=>{
+    searchValue = searchValue.replace(/\s+/g,'-');
+    console.log(`http://localhost:4000/search/${currentUser}?search=${searchValue}`);
+    return async(dispatch)=>{
+        const matchedBooks = await  axios.get(`http://localhost:4000/search/${currentUser}?search=${searchValue}`)
+        dispatch({type:GET_SEARCHED_BOOKS,Books:matchedBooks.data})
     }
 }
