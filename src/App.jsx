@@ -53,7 +53,6 @@ const router = createBrowserRouter(
           <Route path="account-status" element={<SettingsAccountStatus/>} />
         </Route>
         <Route path="/admin" element = {<Admin/>}>
-          <Route path="dashboard" element={<SettingsHistory/>} />
           <Route path="all-books" element={<AdminAllBooks/>} />
           <Route path="add-edit-book/" element={<AdminAddEditBook/>} />
           <Route path="add-edit-book/:id" element={<AdminAddEditBook/>} />

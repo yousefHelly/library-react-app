@@ -3,19 +3,19 @@ import { useParams } from 'react-router-dom';
 import { BookViewHeader } from '../components/BookView/BookViewHeader';
 import { BookViewContent } from './../components/BookView/BookViewContent';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeDetailsNav } from '../Redux/actions/AllActions';
-import { AVAILABLE, VIEW_BOOK } from '../Redux/Types';
-import { Books } from './../Data';
-import axios from 'axios';
+import { ChangeDetailsNav, GetBook } from '../Redux/actions/AllActions';
+import { VIEW_BOOK } from '../Redux/Types';
 export const BookView = () => {
   const {id} = useParams()  
-  const [book,setBook] = useState([])
-  const User = useSelector((state)=>state.user.currentUser)
-  useEffect(()=>{
-    const bookData = axios.get(`http://localhost:4000/books/${id}`)
-    bookData.then((res)=>setBook(res.data))
-  },[])
+  const [book,setBook] = useState({})
   const dispatch = useDispatch()
+  useEffect(()=>{
+    dispatch(GetBook(id))
+  },[])
+  const bookData = useSelector((state)=>state.booksData.CurrentBook)
+  useEffect(()=>{
+    setBook(bookData)
+  },[bookData])
   useEffect(
     ()=>{
       document.title = `Library | ${book.bookName}`

@@ -6,8 +6,7 @@ import { searchInputVariants } from '../../animations/search';
 import { searchHistoryVariants } from './../../animations/search';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllBooks, GetSearchedBooks } from '../../Redux/actions/AllActions';
-import axios from 'axios';
+import { GetAllBooks, GetSearchHistory, GetSearchedBooks } from '../../Redux/actions/AllActions';
 export const SearchInput = () => {
     const [searchHistory,setSearchHistory] = useState(false)
     const [searchParams,setSearchParams] = useSearchParams()
@@ -15,18 +14,20 @@ export const SearchInput = () => {
     const searchInput = useRef(0)
     const dispatch = useDispatch()
     const User = useSelector((state)=>state.user.currentUser)
+    const LastPage = useSelector((state)=>state.searchHistoryData.totalPages)
     let [searchData,setSearchData] = useState([])
     useEffect(()=>{
-      const historyData = axios.get(`http://localhost:4000/searchHistory/${User.user_id}/0`)
-      historyData.then((res)=>setHistory(res.data)).then(()=>{
-        setSearchData(history.filter((sh,i)=>{
-          if(i>history.length-4 && i<history.length){
-            return(sh)
-          }
-        }))
-      })
-      console.log(searchData);
-    },[searchData])
+      dispatch(GetSearchHistory(User.user_id,LastPage))
+    },[])
+    const searchHistoryData = useSelector((state)=>state.searchHistoryData.SearchHistory)
+    useEffect(()=>{
+      setHistory(searchHistoryData)
+      setSearchData(history.filter((sh,i)=>{
+        if(i>history.length-4 && i<history.length){
+          return(sh)
+        }
+      }))
+    },[searchHistoryData])
     const PreviousSearch = (e)=>{
       const string = e.target.childNodes[0].textContent
       searchInput.current.value = string

@@ -6,30 +6,33 @@ const { body, validationResult } = require("express-validator");
 const fs = require("fs");
 
 router.get("/bookspage/:page", async (req, res) => {
-    const query = util.promisify(conn.query).bind(conn);
-    const GetNumberOfBooks = util.promisify(conn.query).bind(conn);
+  const query = util.promisify(conn.query).bind(conn);
+  const GetNumberOfBooks = util.promisify(conn.query).bind(conn);
+  const GetNumberOfPages = util.promisify(conn.query).bind(conn);
 
-    const {page} = req.params;
-    minPage = parseInt(page) * 20;
-    maxPage = minPage + 20;
-    const sql = 
-    `SELECT bookName, bookDescription, author, field, publicationDate, image_url, pdf_url, book.book_id, Count(*) AS 'CountChapters' FROM book 
-    right join chapter on book.book_id = chapter.book_id GROUP BY chapter.book_id
-    LIMIT ${minPage}, ${maxPage}`;
+  const {page} = req.params;
+  minPage = parseInt(page) * 20;
+  maxPage = minPage + 20;
+  const sql = 
+  `SELECT book.book_id, bookName, bookDescription, author, field, publicationDate, image_url, pdf_url, Count(*) AS 'CountChapters' FROM book 
+  right join chapter on book.book_id = chapter.book_id GROUP BY chapter.book_id
+  LIMIT ${minPage}, ${maxPage}`;
 
-    const books = await query(sql);
-    const numberOfBooks = await GetNumberOfBooks(`SELECT COUNT(*) AS 'CountBooks' FROM book`);
+  const books = await query(sql);
+  const numberOfBooks = await GetNumberOfBooks(`SELECT COUNT(*) AS 'CountBooks' FROM book`);
+  const numberOfPages = Math.ceil(numberOfBooks[0].CountBooks / 20); 
 
-    books.map((book) => {
-        book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
-        book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
-    });
-    res.status(200).json({
-      books:books,
-      numberOfBooks: numberOfBooks,
-    });
+  books.map((book) => {
+      book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
+      book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
+  });
+  res.status(200).json({
+    books:books,
+    numberOfBooks: numberOfBooks,
+    numberOfPages: numberOfPages,
+    currentPage:+page
+  });
 });
-
 router.get("/books/:book_id", async (req, res) => {
   const query = util.promisify(conn.query).bind(conn);
   const sql = 
@@ -39,11 +42,11 @@ router.get("/books/:book_id", async (req, res) => {
   const book = await query(sql, [req.params.book_id,]);
   
   if (!book[0]) {
-    res.status(404).json({ msg: "Book Not Found !" });
+    return res.status(404).json({ msg: "Book Not Found !" });
   }
   book[0].image_url = "http://" + req.hostname + ":4000/" + book[0].image_url;
   book[0].pdf_url = "http://" + req.hostname + ":4000/" + book[0].pdf_url;
-  res.status(200).json(book[0]);
+  return res.status(200).json(book[0]);
 });
 
 router.post("/books", 
@@ -137,7 +140,7 @@ router.put("/updateAll/:book_id",
             req.params.book_id,
           ]);
           if (!book[0]) {
-            res.status(404).json({ msg: "Book is not found !" });
+            return res.status(404).json({ msg: "Book is not found !" });
           }
     
           const bookObj = {
@@ -159,7 +162,7 @@ router.put("/updateAll/:book_id",
             msg: "Book updated successfully",
           });
         } catch (err) {
-          res.status(500).json(err);
+          return res.status(500).json(err);
         }
 });
 
@@ -180,7 +183,7 @@ router.put("/addPDF/:book_id",
             msg: "PDF added Successfully",
           });
         } catch (err) {
-          res.status(500).json(err);
+          return res.status(500).json(err);
         }
       }
 );
@@ -193,15 +196,15 @@ router.delete("/books/:book_id", async (req, res) => {
       ]);
 
       if (!book[0]) {
-        res.status(404).json({ msg: "Book is not found !" });
+        return res.status(404).json({ msg: "Book is not found !" });
       }
       fs.unlinkSync("./upload/" + book[0].image_url); // delete old image
       await query("DELETE FROM book WHERE book_id = ?", [book[0].book_id]);
-      res.status(200).json({
+      return res.status(200).json({
         msg: "Book deleted successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 

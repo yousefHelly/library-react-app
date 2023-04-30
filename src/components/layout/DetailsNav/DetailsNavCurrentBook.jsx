@@ -1,21 +1,27 @@
 import {motion ,AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState } from 'react'
 import { DetailsNavVariantsContainer, imgVariants, bookInfoVariants, bookInfoTextVariants, plotVariants, plotTextVariants, bookViewBtn, DetailsNavVariants } from '../../../animations/detailsNav';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { GetAllBooks } from '../../../Redux/actions/AllActions';
 
 export const DetailsNavCurrentBook = () => {
     const currentBook = useSelector((state)=>state.current.currentBook)
     const [Books,setBooks] = useState([])
+    const currentPage = useSelector((state)=>state.booksData.currentPage)
+    const dispatch =  useDispatch()
     useEffect(()=>{
-      const booksData = axios.get(`http://localhost:4000/bookspage/0`)
-      booksData.then((res)=>setBooks(res.data.books))
+        dispatch(GetAllBooks(currentPage))
     },[])
+    const booksData = useSelector((state)=>state.booksData.Books)
+    useEffect(()=>{
+      setBooks(booksData.books)
+    },[booksData])
   return (
     <motion.div key='CurrentBook' variants={DetailsNavVariantsContainer} initial='init' animate='show' exit='leave' className='text-slate-50 w-full h-full flex px-10 flex-col justify-center items-center'>
     <AnimatePresence mode='wait'>
        {
+        Books&&
         Books.map((book,i)=>{return(
             book.book_id === currentBook&&
             <motion.div variants={DetailsNavVariants} initial='init' animate='show' exit='leave' key={i} className='flex gap-4 flex-col items-center'>

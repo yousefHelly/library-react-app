@@ -69,6 +69,7 @@ export const ProfileForm = () => {
     })
   return (
     <Formik
+    enableReinitialize
     initialValues={{
         //User Info
         FirstName:`${User?User.userName&&User.userName.split(' ')[0]:''}`,
@@ -89,15 +90,14 @@ export const ProfileForm = () => {
             password:values.Password,
             phone:values.Phone,
             status:ACTIVE,
-            image:ImgRef.current.files[0]
+            image:ImgRef.current.files[0],
+            type:User.type
         },{headers:{'Content-Type':'multipart/form-data'}}).then(async(res)=>{
             const user = await res.data.user
-            console.log(user);
             const decryptedUser = AES.encrypt(JSON.stringify(user),SECRET).toString()
             sessionStorage.setItem('User',decryptedUser)          
             dispatch(ChangeCurrentUser(res.data.user));
         })
-        console.log(values);
         setTimeout(()=>{
             navigate('/')
         },1000)
@@ -165,10 +165,10 @@ export const ProfileForm = () => {
                 className={`input w-full input-bordered input-primary ${errors.Password&&touched.Password?'input-error':''}`}
                 />          
                 {
-                  showPassword?
-                  <ImEyeBlocked onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
-                  :
-                  <ImEye onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
+                    showPassword?
+                    <ImEyeBlocked onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
+                    :
+                    <ImEye onClick={()=>setShowPassword(!showPassword)} className='text-2xl sec absolute top-1/2 -translate-y-1/2 right-4 hover:text-primary cursor-pointer'/>
                 }
                 </span>
                 <ErrorMessage component='div' name='Password'>{msg=>{return(<React.Fragment><span className='text-error text-sm flex gap-3 items-center'><MdError/>{msg}</span></React.Fragment>)}}</ErrorMessage>

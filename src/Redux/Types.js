@@ -23,5 +23,10 @@ export const ADMIN = 'ADMIN'
 export const ACTIVE = 'ACTIVE'
 export const INACTIVE = 'INACTIVE'
 //BooksData types
-export const GET_ALL_BOOKS = 'GET_ALL_BOOKS'
-export const GET_SEARCHED_BOOKS = 'GET_SEARCHED_BOOKSs'
+export const GET_BOOKS = 'GET_BOOKS'
+export const GET_CURRENT_BOOK = 'GET_CURRENT_BOOK'
+//Requests types
+export const GET_REQUESTS = 'GET_REQUESTS'
+//AuthorsData types
+export const GET_AUTHORS = 'GET_AUTHORS'
+export const GET_SEARCH_HISTORY = 'GET_SEARCH_HISTORY'

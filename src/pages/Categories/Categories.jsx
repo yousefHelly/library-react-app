@@ -35,7 +35,7 @@ export const Categories = () => {
         cats.map((cat)=>{
           const randomColor = chooser()
           return(
-            <CategoryCard cat={cat} randomColor={randomColor}/>
+            <CategoryCard key={cat.name} cat={cat} randomColor={randomColor}/>
           )
         })
       }

@@ -29,11 +29,11 @@ export const AdminViewRequests = () => {
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col'>
     {
         userRequests.map?
-        userRequests.map((request)=>{
+        userRequests.map((request,i)=>{
             return(
                 request.status===REQUESTED?
-                <PendingRequest request={request}/>
-                :<RequestDetails request={request} reqType={request.status}/>
+                <PendingRequest key={i} request={request}/>
+                :<RequestDetails key={i} request={request} reqType={request.status}/>
             )
         })
         :

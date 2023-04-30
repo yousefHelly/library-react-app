@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {motion} from 'framer-motion'
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -8,20 +8,24 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios' 
 export const BookViewContent = ({book,id}) => {
+    const userIdRef = useRef(null)
     const User = useSelector((state)=>state.user.currentUser)
+    userIdRef.current = User.user_id? User.user_id:userIdRef.current
     const [bookStatus,setBookStatus] = useState('')
     useEffect(()=>{
-        axios.get(`http://localhost:4000/request/${User.user_id}/${id}`).then((res)=>{
-            const Status = res.data.status
-            if(Status===APPROVED || Status === REQUESTED || Status === DECLINED){
-                setBookStatus(Status)
-            }
-        }).catch((err)=>{
-            const isAvailable = err.response.data.status === AVAILABLE
-            if(isAvailable){
-                setBookStatus(AVAILABLE)
-            }
-        })
+        setTimeout(()=>{
+            User.type!=ADMIN&&axios.get(`http://localhost:4000/request/${userIdRef.current}/${id}`).then((res)=>{
+                const Status = res.data.status
+                if(Status===APPROVED || Status === REQUESTED || Status === DECLINED){
+                    setBookStatus(Status)
+                }
+            }).catch((err)=>{
+                const isAvailable = err.response.data.status === AVAILABLE
+                if(isAvailable){
+                    setBookStatus(AVAILABLE)
+                }
+            })
+        },250)
     },[bookStatus])
     const HandleRequest = ()=>{
         axios.post(`http://localhost:4000/request`,{
@@ -31,7 +35,6 @@ export const BookViewContent = ({book,id}) => {
             setBookStatus(REQUESTED)
         )
     }
-    console.log(bookStatus);
     const notifyRequest = ()=>{
         toast.success(`${book.bookName} has been requested Successfully !`, {
             position: "top-left",
@@ -40,13 +43,6 @@ export const BookViewContent = ({book,id}) => {
         }
         );
     }
-    // const notifyRead = ()=>{
-    //     toast.info(`${book.bookName} has been Added to your Library !`, {
-    //         position: "top-left",
-    //         theme: "dark",
-    //         toastId:2         
-    //     })
-    // }
   return (
     <React.Fragment>
         <motion.div variants={BookViewContentContainerVariants} initial='init' animate='show' className='col-span-3'>

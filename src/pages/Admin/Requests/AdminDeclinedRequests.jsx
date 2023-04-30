@@ -19,9 +19,9 @@ export const AdminDeclinedRequests = () => {
         <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col'>
         {
             decline.length>0?
-            decline.map((request)=>{
+            decline.map((request,i)=>{
                 return(
-                    <RequestDetails request={request} reqType={DECLINED}/>
+                    <RequestDetails key={i} request={request} reqType={DECLINED}/>
                 )
             }):
             <div className='flex flex-col items-center h-80 justify-center p-8'>

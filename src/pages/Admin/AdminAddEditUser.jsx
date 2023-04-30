@@ -9,7 +9,7 @@ import { FileUpload } from '../../components/Admin/FileUpload';
 import axios from 'axios';
 import { MdError } from 'react-icons/md';
 import { useSelector } from 'react-redux';
-import { ACTIVE, ADMIN, INACTIVE } from '../../Redux/Types';
+import { ACTIVE, ADMIN, INACTIVE, READER } from '../../Redux/Types';
 import { ImEye, ImEyeBlocked } from 'react-icons/im';
 const StatusOptions = []
 const Status = [ACTIVE,INACTIVE]
@@ -19,7 +19,7 @@ Status.map((status)=>{
         label:status
     })
 })
-console.log(StatusOptions);
+
 export const AdminAddEditUser = () => {
     let {id} = useParams()
     const User = useSelector((state)=>state.user.currentUser)
@@ -99,6 +99,8 @@ export const AdminAddEditUser = () => {
         (values)=>{
             //set image and pdf values to their files to pass them to multer 
             const fullName = `${values.FirstName} ${values.LastName}`
+            console.log(ImgRef.current.files[0]);
+            console.log(values);
             if(id){
                 //send book data without pdf and chapters 
                 axios.put(`http://localhost:4000/reader/${id}`,{
@@ -107,20 +109,22 @@ export const AdminAddEditUser = () => {
                     password:values.Password,
                     phone:values.Phone,
                     status:values.Status,
-                    image:ImgRef.current.files[0]
+                    image:ImgRef.current.files[0],
+                    type:READER
                 },{headers:{'Content-Type':'multipart/form-data'}})
             }
             else{
                 //send book data without pdf and chapters 
-                        axios.post('http://localhost:4000/reader/',{
-                            userName:fullName,
-                            email:values.Email,
-                            password:values.Password,
-                            phone:values.Phone,
-                            status:values.Status,
-                            image:ImgRef.current.files[0]
-                        }
-                        ,{headers:{'Content-Type':'multipart/form-data'}})
+                axios.post('http://localhost:4000/reader/',{
+                    userName:fullName,
+                    email:values.Email,
+                    password:values.Password,
+                    phone:values.Phone,
+                    status:values.Status,
+                    image:ImgRef.current.files[0],
+                    type:READER
+                }
+                ,{headers:{'Content-Type':'multipart/form-data'}})
         }
         setTimeout(()=>{
             navigate('/admin/all-users')

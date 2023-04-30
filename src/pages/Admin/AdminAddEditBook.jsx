@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion';
 import { ContainerVariants, childVariants } from './../../animations/home';
-import { Form, Formik, ErrorMessage } from 'formik';
+import { Form, Formik, ErrorMessage, Field } from 'formik';
 import * as Yup  from 'yup';
 import { useNavigate, useParams } from 'react-router-dom';
-import { authors, cats } from '../../Data';
+import { cats } from '../../Data';
 import Select from 'react-select';
 import { AddEditBookDes } from '../../components/Admin/AddEditBookDes';
 import { FileUpload } from '../../components/Admin/FileUpload';
@@ -15,17 +15,10 @@ import { useSelector } from 'react-redux';
 import { ADMIN } from '../../Redux/Types';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 const categoryOptions = []
-const authorOptions = []
 cats.map((cat)=>{
     categoryOptions.push({
         value:cat.name,
         label:cat.name
-    })
-})
-authors.map((author)=>{
-    authorOptions.push({
-        value:author.name,
-        label:author.name
     })
 })
 export const AdminAddEditBook = () => {
@@ -264,15 +257,8 @@ export const AdminAddEditBook = () => {
                         <motion.div  variants={childVariants} className='col-span-2'>
                             <h4 className='text-2xl my-4'>Author</h4>
                             <div className='border rounded-xl shadow-xl p-4 flex gap-2 flex-col'>
-                            <label htmlFor='BookAuthor' className='sec font-bold'>Choose author</label>
-                            <Select
-                            id={"BookAuthor"}
-                            type={"text"}
-                            value={authorOptions.find((autOpt)=>autOpt.value === values.BookAuthor)}
-                            onChange={option => setFieldValue("BookAuthor", option.value)}
-                            options={authorOptions}
-                            onBlur={handleBlur}
-                            />
+                            <label htmlFor='BookAuthor' className='sec font-bold'>Author Name</label>
+                            <Field className='input input-primary' name='BookAuthor' id='BookAuthor'/>
                             <ErrorMessage component='div' name={`BookAuthor`}>{msg=>{return(<React.Fragment><span className='text-error text-sm flex gap-3 items-center'><MdError/>{msg}</span></React.Fragment>)}}</ErrorMessage>
                             </div>
                         </motion.div>

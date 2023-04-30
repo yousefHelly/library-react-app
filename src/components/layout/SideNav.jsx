@@ -52,7 +52,7 @@ export const SideNav = () => {
         {
             icon:MdDashboard,
             text:'Dashboard',
-            dest:'/admin/dashboard'
+            dest:'/admin/all-books'
         }
     ]
     const handleSettings = ()=>{

@@ -1,14 +1,20 @@
-import { GET_ALL_BOOKS, GET_SEARCHED_BOOKS } from "../Types"
+import { GET_BOOKS, GET_CURRENT_BOOK } from "../Types"
 
-export const BooksDataReducer = (state = { Books : [] }, action)=>{
+export const BooksDataReducer = (state = { Books : [], CurrentBook: {}, totalPages:1 , currentPage:0 }, action)=>{
     switch(action.type){
-        case GET_ALL_BOOKS:
+        case GET_BOOKS:
             return{
-                Books: action.Books
+                Books: action.Books,
+                totalPages:action.totalPages,
+                currentPage:action.currentPage,
+                CurrentBook:state.CurrentBook
             }
-        case GET_SEARCHED_BOOKS:
+        case GET_CURRENT_BOOK:
             return{
-                Books: action.Books
+                Books: state.Books,
+                totalPages:state.totalPages,
+                currentPage:state.currentPage,
+                CurrentBook: action.CurrentBook
             }
         default:
             return state

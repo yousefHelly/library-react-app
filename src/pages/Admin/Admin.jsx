@@ -7,7 +7,7 @@ import { leftContainerVariants, rightContainerVariants, settingsNavVariants } fr
 import { useSelector, useDispatch } from 'react-redux';
 import { ADMIN } from '../../Redux/Types';
 import {ChangeDetailsNav} from '../../Redux/actions/AllActions'
-import { MdDashboard,MdPendingActions } from 'react-icons/md';
+import { MdPendingActions } from 'react-icons/md';
 import { FaUsers,FaUserEdit } from 'react-icons/fa';
 export const Admin = () => {
   const dispatch =  useDispatch()
@@ -16,12 +16,11 @@ export const Admin = () => {
     useEffect(()=>{
         document.title = 'Library | Admin'
         dispatch(ChangeDetailsNav(null))
-        User.type!=ADMIN&&navigate('/')
+        User.type!=ADMIN?navigate('/'):null
     },[])
   return (
     <div className='grid grid-cols-12 min-h-[450px]'>
     <motion.div variants={leftContainerVariants} initial='init' animate='show' className='col-span-2 p-6 glass bg-primary/75 hover:bg-primary/75 rounded rounded-r-none shadow-md flex flex-col gap-8'>
-        <motion.span variants={settingsNavVariants}><NavLink to='/admin/dashboard' className='text-md flex items-center transition duration-150 hover:text-slate-50 gap-3 p-2 rounded settings-side-sec'><MdDashboard/>Dashboard</NavLink></motion.span>
         <motion.span variants={settingsNavVariants}><NavLink to='/admin/all-books' className='text-md flex items-center transition duration-150 hover:text-slate-50 gap-3 p-2 rounded settings-side-sec'><ImBooks/>All Books</NavLink></motion.span>
         <motion.span variants={settingsNavVariants}><NavLink to='/admin/add-edit-book' className='text-md flex items-center transition duration-150 hover:text-slate-50 gap-3 p-2 rounded settings-side-sec '><GiNotebook/>Add/Edit Book</NavLink></motion.span>
         <motion.span variants={settingsNavVariants} onClick={()=>navigate('/admin/requests/pending-requests')} ><NavLink to='/admin/requests' className='text-md flex items-center transition duration-150 hover:text-slate-50 gap-3 p-2 rounded settings-side-sec '><MdPendingActions/>Requests</NavLink></motion.span>

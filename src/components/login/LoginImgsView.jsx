@@ -1,12 +1,12 @@
-import React, {  useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
-import { Books } from '../../Data';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {Autoplay, EffectCoverflow} from 'swiper'
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/autoplay';
-import { rightContainerVariants } from '../../animations/settings';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetAllBooks } from '../../Redux/actions/AllActions';
 const loginImgsContainerVariants = {
   show:{
     transition:{
@@ -35,9 +35,21 @@ const loginImgsTextVariants = {
   }
 } 
 export const LoginImgsView = () => {
-  const [currentBook,setCurrentBook] = useState('Oliver Twist')
+  const dispatch = useDispatch()
+  const [Books,setBooks] = useState([])
+  useEffect(()=>{
+    dispatch(GetAllBooks(0))
+  },[])
+  const booksData = useSelector((state)=>state.booksData.Books)
+  useEffect(()=>{
+      setBooks(booksData.books)
+  },[booksData])
+  const [currentBook,setCurrentBook] = useState('')
+  setTimeout(()=>{
+    setCurrentBook(Books&&Books.length>0&&Books[0].bookName)
+  },100)
   return (
-    <div  className='w-full h-full bg-primary flex justify-center items-center'>
+    <div className='w-full h-full bg-primary flex justify-center items-center'>
     <div className='bg-secondary/75 backdrop-blur-sm p-10 z-10 md:w-[100vh] lg:w-auto md:rounded-2xl text-center md:text-start'>
       <h3 className='text-3xl text-slate-50 font-bold max-w-sm'>Hundreds of books are waiting for you 🤞</h3>
       <h4 className='text-3xl mt-2 text-slate-50 font-bold max-w-sm'>Login Now</h4>
@@ -62,27 +74,29 @@ export const LoginImgsView = () => {
       autoplay={{pauseOnMouseEnter:true,delay:'3000',disableOnInteraction:false}}
     >
     {
+      Books&&
+      Books.length>0&&
       Books.map((book)=>{
         return(
-          <SwiperSlide  key={book.BookId} className='flex items-center justify-center'><motion.img initial={{y:-100,opacity:0}} animate={{y:0,opacity:1}}  className='h-full w-full' src={book.BookImg} alt={`${book.BookName}`} /></SwiperSlide>
+          <SwiperSlide  key={book.book_id} className='flex items-center justify-center'><motion.img  key={book.book_id} initial={{y:-100,opacity:0}} animate={{y:0,opacity:1}}  className='h-full w-full object-cover' src={book.image_url} alt={`${book.bookName}`} /></SwiperSlide>
         )
       })
     }
     </Swiper>
       </div>
     <motion.div variants={loginImgsContainerVariants} initial='init' animate='show' exit='exit' className='w-full text-center'>
-    <AnimatePresence mode='wait'>
       {
+        Books&&
+        Books.length>0&&
         Books.map((book)=>{
           return(
-            currentBook===book.BookName&&<React.Fragment>
-              <motion.p key={book.BookName} variants={loginImgsTextVariants} className='absolute bottom-3 left-1/2 -translate-x-1/2 text-3xl w-full text-slate-50'>{book.BookName}</motion.p>
-              <motion.p key={book.BookAuthor} variants={loginImgsTextVariants} className='absolute -bottom-4 left-1/2 -translate-x-1/2 text-2xl w-full text-slate-50 sec '>{book.BookAuthor}</motion.p>
+            currentBook===book.bookName&&<React.Fragment>
+              <motion.p key={book.bookName} variants={loginImgsTextVariants} className='absolute bottom-3 left-1/2 -translate-x-1/2 capitalize font-bold tracking-[3px] text-2xl w-full text-slate-50'>{book.bookName}</motion.p>
+              <motion.p key={book.author} variants={loginImgsTextVariants} className='absolute -bottom-4 left-1/2 -translate-x-1/2 capitalize text-lg w-full text-slate-300'>{book.author}</motion.p>
             </React.Fragment>
           )
         })
       }
-    </AnimatePresence>
     </motion.div>
       </div>
     </div>

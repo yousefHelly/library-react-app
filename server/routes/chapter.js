@@ -8,7 +8,7 @@ router.get("/chapter", async (req, res) => { // Get All
     const query = util.promisify(conn.query).bind(conn);
     const sql = "SELECT title, chapterDescription FROM chapter";
     const chapters = await query(sql);
-    res.status(200).json(chapters);
+    return res.status(200).json(chapters);
 });
 
 router.get("/chapter/:book_id", async (req, res) => {
@@ -17,9 +17,9 @@ router.get("/chapter/:book_id", async (req, res) => {
     const sql = `SELECT chapter_id, title, chapterDescription FROM book JOIN chapter ON book.book_id = chapter. book_id WHERE book.book_id =${book_id}`;
     const chapters = await query(sql);
     if (!chapters[0]) {
-        res.status(404).json({ msg: "Chapter is not found !" });
+      return res.status(404).json({ msg: "Chapter is not found !" });
       }
-    res.status(200).json(chapters);
+      return res.status(200).json(chapters);
 });
 
 router.post("/chapter",     
@@ -56,12 +56,12 @@ router.post("/chapter",
     query("INSERT INTO chapter SET ?", chapter);
     const chapterId = await GetChapterId("SELECT chapter_id FROM chapter WHERE title = ? and chapterDescription = ? ",
      [req.body.title, req.body.chapterDescription]);
-    res.status(200).json({
+     return res.status(200).json({
             chapter_id: chapterId,
             msg :"Chapter created successfully",
         });
     } catch(err){
-        res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
@@ -89,7 +89,7 @@ router.put("/chapter/:chapter_id",
       ]);
 
       if (!chapter[0]) {
-        res.status(404).json({ msg: "Chapter is not found !" });
+        return res.status(404).json({ msg: "Chapter is not found !" });
       }
 
       const GetBook = util.promisify(conn.query).bind(conn);
@@ -104,11 +104,11 @@ router.put("/chapter/:chapter_id",
 
       await query("UPDATE chapter SET ? WHERE chapter_id = ?", [chapterObj, chapter[0].chapter_id]);
 
-      res.status(200).json({
+      return res.status(200).json({
         msg: "Chapter updated successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
@@ -120,15 +120,15 @@ router.delete("/chapter/:chapter_id", async (req, res) => {
       ]);
 
       if (!chapter[0]) {
-        res.status(404).json({ msg: "Chapter is not found !" });
+        return res.status(404).json({ msg: "Chapter is not found !" });
       }
 
       await query("DELETE FROM chapter WHERE chapter_id = ?", [chapter[0].chapter_id]);
-      res.status(200).json({
+      return res.status(200).json({
         msg: "Chapter deleted successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 

@@ -3,9 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DetailsNavVariantsContainer } from '../../../animations/detailsNav';
 import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'react-router-dom';
-import { cats, authors } from '../../../Data';
+import { cats } from '../../../Data';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetAllAuthors } from '../../../Redux/actions/AllActions';
 
 export const DetailsNavSearch = () => {
+    const dispatch = useDispatch()
+    const [authors,setAuthors] = useState([])
+    useEffect(()=>{
+        dispatch(GetAllAuthors(0))
+    },[])
+    const authorsData = useSelector((state)=>state.authorsData.Authors)
+    useEffect(()=>{
+      setAuthors(authorsData.authors)
+    },[authorsData])
+
     const [searchParams,setSearchParams] = useSearchParams()
     //All Category state and ref
     const [catAll,setCatAll] = useState(true)
@@ -80,7 +92,7 @@ export const DetailsNavSearch = () => {
             <div className='flex flex-col gap-5 pt-8'>
                 <div className='category'>
                     <h4 className='text-xl pb-3'>Category</h4>
-                    <div className='flex flex-col gap-3 pt-3 overflow-scroll max-h-[150px]'>
+                    <div className='flex flex-col gap-3 pt-3 overflow-scroll overscroll-none max-h-[150px]'>
                         <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
                         <input ref={catAllRef} onChange={(e)=>setCatAll(e.target.checked)} type="checkbox" className="checkbox checkbox-primary" />
                         <span className="label-text text-slate-50">All</span> 
@@ -105,22 +117,20 @@ export const DetailsNavSearch = () => {
                 <div className='h-[1px] bg-slate-400'></div>
                 <div className='author'>
                     <h4 className='text-xl'>Author</h4>
-                    <div className='flex flex-col gap-3 pt-4 overflow-scroll max-h-[150px]'>
+                    <div className='flex flex-col gap-3 pt-4 overflow-scroll overscroll-none max-h-[150px]'>
                         <label className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
                         <input ref={AuthorsAllRef} onChange={(e)=>setAuthorsAll(e.target.checked)} type="checkbox" className="checkbox checkbox-primary" />
                         <span className="label-text text-slate-50">All</span> 
                         </label>
                         {
+                            authors&&
+                            authors.length>0&&
                             authors.map((author)=>{
                                 //if all author is selected uncheck others
-                                const ref2 = useRef(0)
-                                useEffect(()=>{
-                                    AuthorsAll?ref2.current.checked = false : null
-                                },[AuthorsAll])
                                 return(
-                                    <label key={author.name} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
-                                    <input ref={ref2} onChange={(e)=>handleClicked(e.target.checked,author.name,'author')}  type="checkbox" className="checkbox checkbox-primary" />
-                                    <span className="label-text text-slate-50">{author.name}</span> 
+                                    <label key={author.author} className="label pl-0 cursor-pointer flex justify-start gap-5 items-center">
+                                    <input checked={AuthorsAll?false:searchParams.get(`author`).split('&').includes(author.author)?true:null} onChange={(e)=>handleClicked(e.target.checked,author.author,'author')}  type="checkbox" className="checkbox checkbox-primary" />
+                                    <span className="label-text capitalize text-slate-50">{author.author}</span> 
                                     </label>
                                 )
                             })

@@ -17,9 +17,9 @@ export const AdminPendingRequests = () => {
     <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col'>
     {
         pending.length>0?
-        pending.map((request)=>{
+        pending.map((request,i)=>{
             return(
-                <PendingRequest request={request}/>
+                <PendingRequest key={i} request={request}/>
             )
         }):
         <div className='flex flex-col items-center h-80 justify-center p-8'>

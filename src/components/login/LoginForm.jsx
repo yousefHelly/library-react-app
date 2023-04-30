@@ -26,9 +26,7 @@ export const LoginForm = () => {
       })
     }
     const LogIn = ({login,message,user})=>{
-      console.log({login,message,user});
       if (login){
-        console.log(user);
         navigate('/',{
           replace:true
         })
@@ -65,8 +63,6 @@ export const LoginForm = () => {
             email:email,
             password:password
           }).then((res)=>LogIn(res.data)).catch((err)=>loginError(err.response.data.errors[0].msg))
-          //get the Current User Info and encrypt it and save it in the sessionStorage
-          //show Error Msg in a toast
       }
     }
     >{

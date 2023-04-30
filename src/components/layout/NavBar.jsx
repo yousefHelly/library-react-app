@@ -41,6 +41,7 @@ const ScrollToTopBtn = ({currentPage})=>{
 export const NavBar = () => {
     const searchInput = useRef()
     const [searchIcon,setSearchIcon] = useState(true)
+    const [searchQuery,setSearchQuery] = useState('')
     const sideNav = useSelector((state)=>state.nav.sideNavOpen)
     const dispatch = useDispatch()
     const searchText =()=>{
@@ -62,6 +63,13 @@ export const NavBar = () => {
         }
     },[])
     const currentPage = useSelector((state)=>state.detailsNav.currentBook)
+    const handleKeyDown = (event)=>{
+        if(event.key==='Enter' && searchQuery!=''){
+            navigate(`/search?value=${searchQuery}`)
+            searchInput.current.value = ''
+            setSearchIcon(true)
+        }
+    }
   return (
     <React.Fragment>
         <div className='grid grid-cols-12 mx-auto overflow-x-hidden'>
@@ -83,7 +91,7 @@ export const NavBar = () => {
                         </ul>
                     </div>
                     <div className='hidden lg:block relative self-center'>
-                        <input ref={searchInput} onChange={searchText}  type='search' className='px-3 w-[18rem] py-2 border rounded-full bg-zinc-50 focus-within:outline-none' placeholder='Genre, author, or book name'/>
+                        <input ref={searchInput} onKeyDown={handleKeyDown} onChange={(e)=>{setSearchQuery(e.target.value);searchText()}}  type='search' className='px-3 w-[18rem] py-2 border rounded-full bg-zinc-50 focus-within:outline-none' placeholder='Book Name or Author'/>
                         {searchIcon&& <FaSearch className='absolute right-[15px] top-[10px] text-xl text-zinc-400'/>}
                     </div>
                     <AnimatePresence>

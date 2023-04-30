@@ -13,7 +13,7 @@ export const FileUpload = ({type,text = type, page='Default', id , fileRef, ...p
         {
             value?
             <React.Fragment>
-                {text==='image'&&<img src={value} className='h-28 rounded-full'/>}
+                {text==='image'&&<img src={!fileRef?.current?.files[0]?value:URL.createObjectURL(fileRef.current.files[0])} className='h-28 rounded-full'/>}
                 <div className='flex items-center justify-center'>
                     <p className='sec text-2xl pl-1 py-2'>Update</p>
                 </div>
@@ -36,7 +36,7 @@ export const FileUpload = ({type,text = type, page='Default', id , fileRef, ...p
             {
                 value?
                 <React.Fragment>
-                    {text==='image'&&<img src={id?value:URL.createObjectURL(fileRef.current.files[0])} className='h-48'/>}
+                    {text==='image'&&<img src={!fileRef?.current?.files[0]?value:URL.createObjectURL(fileRef.current.files[0])} className='h-48'/>}
                     <p className='sec my-2'>{id?value:fileRef.current.files[0].name}</p>
                     <div className='flex items-center justify-center p-4'>
                         <p className='sec text-2xl'>Update</p>

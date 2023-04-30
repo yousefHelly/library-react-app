@@ -1,27 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../Redux/actions/AllActions';
-import { HOME, REQUESTED } from '../Redux/Types';
+import { ChangeCurrent, ChangeDetailsNav, GetAllBooks, GetUserRequests } from '../Redux/actions/AllActions';
+import { HOME } from '../Redux/Types';
 import { motion } from 'framer-motion';
 import { childVariants } from '../animations/home';
 import { ContainerVariants } from './../animations/home';
 import { RequestedBook } from '../components/myRequests/RequestedBook';
-import { AVAILABLE } from './../Redux/Types';
-import axios from 'axios';
 import { BiMessageAltError } from 'react-icons/bi';
 export const MyRequests = () => {
   const dispatch = useDispatch()
   const [Books,setBooks] = useState([])
   const [requested,setRequested] = useState([])
   const User = useSelector((state)=>state.user.currentUser)
+  const userIdRef = useRef(null)
+  userIdRef.current = User.user_id? User.user_id:userIdRef.current
+  let count = 0
   useEffect(()=>{
-    dispatch(GetAllBooks())
-    axios.get(`http://localhost:4000/request/${User.user_id}`).then((res)=>setRequested(res.data))
-},[])
-const BooksData = useSelector((state)=>state.booksData.Books)
+    dispatch(GetAllBooks(0))
+    userIdRef.current&&dispatch(GetUserRequests(userIdRef.current))
+},[userIdRef.current])
+  const BooksData = useSelector((state)=>state.booksData.Books)
+  const requestsData = useSelector((state)=>state.requestsData.Requests)
   useEffect(()=>{
   setBooks(BooksData.books)
   },[BooksData])
+  useEffect(()=>{
+    setRequested(requestsData)
+    },[requestsData])
   useEffect(
     ()=>{
       document.title = 'Library | My requests'
@@ -37,16 +42,28 @@ const BooksData = useSelector((state)=>state.booksData.Books)
     <motion.div variants={ContainerVariants} className='suggested books grid sm:mx-20 md:mx-0 gap-5'>
       {
         Books?
+        <React.Fragment>
+        {
         Books.map((book)=>{
           return(
                 requested.map((request)=>{
                 return(
-                  book.bookName===request.bookName&&<RequestedBook key={book.book_id} book={book} index={book.book_id} date={request.requestDate} status={request.status}/>
+                  book.bookName===request.bookName&&<RequestedBook key={count++} book={book} index={book.book_id} date={request.requestDate} status={request.status}/>
                 )
               })
           )
           }
-        ):
+        )
+        }
+        {
+          count===0&&
+          <div className='flex flex-col col-span-full items-center h-80 justify-center p-8'>
+            <BiMessageAltError className='text-5xl text-primary'/>
+            <h3 className='text-xl'>No Books Available</h3>
+          </div>
+        }
+        </React.Fragment>
+        :
         <div className='flex flex-col col-span-full items-center h-80 justify-center p-8'>
           <BiMessageAltError className='text-5xl text-primary'/>
           <h3 className='text-xl'>No Books Available</h3>

@@ -2,17 +2,20 @@ import React,{useEffect, useState} from 'react'
 import {motion} from 'framer-motion'
 import { DetailedBook } from './../components/home/DetailedBook';
 import { BookGridView } from '../components/home/BookGridView';
-import { childVariants, ContainerVariants, cardChildVariants } from './../animations/home';
+import { childVariants, ContainerVariants } from './../animations/home';
 import { useDispatch, useSelector } from 'react-redux';
 import { HOME } from './../Redux/Types';
 import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../Redux/actions/AllActions';
+import { Pagination } from '../components/layout/Pagination';
 
 export const Home = () => {
   const dispatch = useDispatch()
   const [Books,setBooks] = useState([])
     useEffect(()=>{
       document.title = 'Library | Home'
-      dispatch(GetAllBooks())
+      dispatch(GetAllBooks(0))
+    },[])
+    useEffect(()=>{
       dispatch(ChangeDetailsNav(HOME))
     },[])
     const booksData = useSelector((state)=>state.booksData.Books)
@@ -31,7 +34,7 @@ export const Home = () => {
             Books.map((book,i)=>{
                 while(i<2){
                   return(
-                    <DetailedBook id={book.book_id} book={book} index={book.book_id}/>
+                    <DetailedBook key={book.book_id} id={book.book_id} book={book} index={book.book_id}/>
                   )
                 }
 
@@ -51,6 +54,11 @@ export const Home = () => {
             <h3>No Books Available</h3>
           }
         </motion.div>
+        {
+          Books&&
+          Books.length>0&&
+          <Pagination/>
+        }
     </motion.div>
   )
 }

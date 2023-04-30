@@ -20,9 +20,9 @@ export const AdminApprovedRequests = () => {
         <motion.div variants={ContainerVariants} initial='init' animate='show' className='flex flex-col'>
         {
             approve.length>0?
-            approve.map((request)=>{
+            approve.map((request,i)=>{
                 return(
-                    <RequestDetails request={request} reqType={APPROVED}/>
+                    <RequestDetails key={i} request={request} reqType={APPROVED}/>
                 )
             })
             :

@@ -83,11 +83,10 @@ router.post("/reader",
       phone: req.body.phone,
       status:req.body.status,
       image_url: req.file.filename,
-      type:'READER'
+      type:req.body.type
     };
 
     await query("INSERT INTO user SET ?", user);
-    delete user.password;
     res.status(200).json(user);
 
   } catch(err){
@@ -154,10 +153,11 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         password: req.body.password,
         phone: req.body.phone,
         status:req.body.status,
-        type:'READER'
+        type:req.body.type
       };
 
       if (req.file) {
+        userObj.image_url = req.file.filename;
         fs.unlinkSync("./upload/" + user[0].image_url); // delete old image
       }
 
@@ -166,6 +166,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
       res.status(200).json({
         user:{
           ...userObj,
+          user_id:+req.params.user_id,
           image_url : "http://" + req.hostname + ":4000/" + req.file.filename
         },
         msg: "User updated successfully",
