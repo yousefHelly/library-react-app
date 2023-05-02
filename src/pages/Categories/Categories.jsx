@@ -23,7 +23,7 @@ export const Categories = () => {
   const chooser = randomNoRepeats(colors)
   useEffect(
     ()=>{
-      document.title = 'Library | Home'
+      document.title = 'Library | Categories'
       dispatch(ChangeDetailsNav(HOME))
     }  
   ,)

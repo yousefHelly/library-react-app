@@ -37,17 +37,15 @@ const loginImgsTextVariants = {
 export const LoginImgsView = () => {
   const dispatch = useDispatch()
   const [Books,setBooks] = useState([])
+  const [currentBook,setCurrentBook] = useState('')
   useEffect(()=>{
     dispatch(GetAllBooks(0))
   },[])
   const booksData = useSelector((state)=>state.booksData.Books)
   useEffect(()=>{
       setBooks(booksData.books)
+      setCurrentBook(booksData&&booksData.books&&booksData.books[0]&&booksData.books[0].bookName)
   },[booksData])
-  const [currentBook,setCurrentBook] = useState('')
-  setTimeout(()=>{
-    setCurrentBook(Books&&Books.length>0&&Books[0].bookName)
-  },100)
   return (
     <div className='w-full h-full bg-primary flex justify-center items-center'>
     <div className='bg-secondary/75 backdrop-blur-sm p-10 z-10 md:w-[100vh] lg:w-auto md:rounded-2xl text-center md:text-start'>
@@ -62,7 +60,7 @@ export const LoginImgsView = () => {
       loop={true}
       grabCursor={true}
       centeredSlides={true}
-      onRealIndexChange={(swiper)=>setCurrentBook(swiper.visibleSlides[1].firstChild.alt)}
+      onRealIndexChange={(swiper)=>setCurrentBook(swiper.visibleSlides[1]&&swiper.visibleSlides[1].firstChild.alt)}
       className='w-[450px] h-[350px]'
       modules={[EffectCoverflow, Autoplay]}
       coverflowEffect={{

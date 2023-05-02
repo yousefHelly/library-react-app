@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { HOME } from './../Redux/Types';
 import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../Redux/actions/AllActions';
 import { Pagination } from '../components/layout/Pagination';
+import { BiMessageAltError } from 'react-icons/bi';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -30,7 +31,8 @@ export const Home = () => {
         <motion.h4 variants={childVariants} className='text-xl font-bold'>For you</motion.h4>
         <motion.div variants={ContainerVariants} className='suggested books grid sm:mx-20 md:mx-0 lg:grid-cols-2 gap-5'>
           {
-            Books?
+            Books&&
+            Books.length>0?
             Books.map((book,i)=>{
                 while(i<2){
                   return(
@@ -39,19 +41,26 @@ export const Home = () => {
                 }
 
             }):
-            <h3>No Books Available</h3>
+            <div className='col-span-full flex flex-col items-center h-80 justify-center p-8'>
+              <BiMessageAltError className='text-5xl text-primary'/>
+              <h3 className='text-xl'>No Books Available</h3>
+          </div>
           }
         </motion.div>
         <motion.h4  variants={childVariants} className='text-xl mt-5 font-bold'>All Books</motion.h4>
         <motion.div variants={childVariants} className='suggested books grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
           {
-            Books?
+            Books&&
+            Books.length>0?
             Books.map((book,i)=>{
               return(
               <BookGridView key={book.book_id} book={book} index={book.book_id}/>
               )
             }):
-            <h3>No Books Available</h3>
+            <div className='col-span-full flex flex-col items-center h-80 justify-center p-8'>
+              <BiMessageAltError className='text-5xl text-primary'/>
+              <h3 className='text-xl'>No Books Available</h3>
+            </div>
           }
         </motion.div>
         {
