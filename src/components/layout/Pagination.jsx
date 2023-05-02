@@ -3,13 +3,13 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetAllAuthors, GetAllBooks, GetSearchHistory } from '../../Redux/actions/AllActions'
+import { GetAllAuthors, GetAllBooks, GetCategoryBooks, GetSearchHistory } from '../../Redux/actions/AllActions'
 
-export const Pagination = ({page='books'}) => {
+export const Pagination = ({page='books',category}) => {
     const dispatch = useDispatch()
     //books page
     const AllPages = useSelector((state)=>state.booksData.totalPages)
-    const currentPage = useSelector((state)=>state.booksData.currentPage)
+    const currentPage = useSelector((state)=>state.booksData.currentPage) || 0
     //authors page
     const authorAllPages = useSelector((state)=>state.authorsData.totalPages)
     const authorCurrentPage = useSelector((state)=>state.authorsData.currentPage)
@@ -20,7 +20,7 @@ export const Pagination = ({page='books'}) => {
     //const searchValue = useSelector((state)=>state.searchValue)
     const handlePageClick = (pageNum)=>{
         //dispatch(searchMovies(searchValue,pageNum.selected + 1))
-        page==='books'?dispatch(GetAllBooks(pageNum.selected)):page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):dispatch(GetAllAuthors(pageNum.selected))
+        page==='books'?dispatch(GetAllBooks(pageNum.selected)):page==='category'?dispatch(GetCategoryBooks(category,pageNum.selected)): page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):dispatch(GetAllAuthors(pageNum.selected))
         window.scrollTo({
             left:0,
             top:0,
@@ -40,7 +40,7 @@ export const Pagination = ({page='books'}) => {
             onPageChange={handlePageClick}
             pageRangeDisplayed={range}
             marginPagesDisplayed={range}
-            pageCount={page==='books'?AllPages:page==='searchHistory'?historyAllPages:authorAllPages}
+            pageCount={page==='books'|| page ==='category'?AllPages:page==='searchHistory'?historyAllPages:authorAllPages}
             previousLabel="Prev"
             containerClassName='btn-group justify-center m-4'
             pageClassName='btn btn-md'
@@ -53,7 +53,7 @@ export const Pagination = ({page='books'}) => {
             breakLinkClassName='w-full h-full flex justify-center items-center'
             activeClassName='btn btn-md btn-active'
             activeLinkClassName='w-full h-full flex justify-center items-center'
-            forcePage={page==='books'?currentPage:page==='searchHistory'?historyCurrentPage:authorCurrentPage}
+            forcePage={page==='books'|| page ==='category'?currentPage:page==='searchHistory'?historyCurrentPage:authorCurrentPage}
         />
     </React.Fragment>
   )

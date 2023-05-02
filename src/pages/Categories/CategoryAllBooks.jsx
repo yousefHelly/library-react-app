@@ -5,24 +5,26 @@ import { useParams } from 'react-router-dom';
 import { BookGridView } from './../../components/home/BookGridView';
 import { useDispatch, useSelector } from 'react-redux';
 import { HOME } from '../../Redux/Types';
-import { ChangeCurrent, ChangeDetailsNav, GetAllBooks } from '../../Redux/actions/AllActions';
+import { ChangeCurrent, ChangeDetailsNav, GetCategoryBooks } from '../../Redux/actions/AllActions';
 import { BiMessageAltError } from 'react-icons/bi';
+import { Pagination } from './../../components/layout/Pagination';
 
 export const CategoryAllBooks = () => {
     const {category} = useParams()
     const dispatch = useDispatch()
     const [Books,setBooks] = useState([])
     let count = 0;
-    useEffect(()=>{
-      dispatch(GetAllBooks(0))
-    },[])
     const BooksData = useSelector((state)=>state.booksData.Books)
+    const currentPage = useSelector((state)=>state.booksData.currentPage) || 0
+    useEffect(()=>{
+      dispatch(GetCategoryBooks(category,currentPage))
+    },[])
     useEffect(()=>{
     setBooks(BooksData.books)
     },[BooksData])
     useEffect(
       ()=>{
-        document.title = 'Library | Home'
+        document.title = `Library | ${category}` 
         dispatch(ChangeDetailsNav(HOME))
       }  
     ,[])
@@ -55,6 +57,7 @@ export const CategoryAllBooks = () => {
         </div>
       }
     </motion.div>
+    {Books&&Books.length>0&&<Pagination page='category' category={category}/>}
     </motion.div>
   )
 }

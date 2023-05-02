@@ -43,6 +43,13 @@ export const GetAllBooks = (page=0)=>{
         dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
     }
 }
+export const GetCategoryBooks = (category,page=0)=>{
+    return async(dispatch)=>{
+        const booksData = await axios.get(`http://localhost:4000/field/${category}/${page}}`)
+        console.log(booksData);
+        dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
+    }
+}
 export const GetSearchedBooks = (currentUser,searchValue='')=>{
     searchValue = searchValue.replace(/\s+/g,'-');
     return async(dispatch)=>{
