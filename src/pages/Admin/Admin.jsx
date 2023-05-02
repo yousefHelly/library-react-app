@@ -13,11 +13,12 @@ export const Admin = () => {
   const dispatch =  useDispatch()
   const navigate = useNavigate()
   const User = useSelector((state)=>state.user.currentUser)
+  const type = User.type || ADMIN
     useEffect(()=>{
         document.title = 'Library | Admin'
         dispatch(ChangeDetailsNav(null))
-        User.type!=ADMIN?navigate('/'):null
-    },[])
+        type!=ADMIN?navigate('/'):null
+    },[type])
   return (
     <div className='grid grid-cols-12 min-h-[450px]'>
     <motion.div variants={leftContainerVariants} initial='init' animate='show' className='col-span-2 p-6 glass bg-primary/75 hover:bg-primary/75 rounded rounded-r-none shadow-md flex flex-col gap-8'>

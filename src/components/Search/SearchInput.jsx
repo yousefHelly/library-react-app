@@ -51,8 +51,8 @@ export const SearchInput = () => {
       searchParams.get('value')?searchInput.current.value =searchParams.get('value'):searchInput.current.value=''
     },[])
   return (
-    <motion.div  className='searchContainer w-full z-10 h-40 relative'>
-    <motion.div variants={searchInputVariants} initial='init' animate='show' className='absolute shadow-xl items-center left-1/2 -bottom-5 -translate-x-1/2 flex flex-col md:flex-row'>
+    <motion.div  className='searchContainer w-full h-40 relative'>
+    <motion.div variants={searchInputVariants} initial='init' animate='show' className='absolute shadow-xl z-10 items-center left-1/2 -bottom-5 -translate-x-1/2 flex flex-col md:flex-row'>
       <FaSearch className='text-2xl absolute z-10 -translate-x-28 translate-y-3 md:translate-x-4 md:translate-y-0 text-zinc-400'/>
       <input onBlur={()=>setSearchHistory(false)} ref={searchInput} onChange={()=>openHideHistory()} type="search" className='h-12 pl-14 pr-4 py-3 w-[275px] md:w-[375px] rounded rounded-r-none focus-within:outline-none' placeholder='Search...' />
       <button onClick={()=>searchInputHandler()} className='btn btn-secondary w-full md:w-28 px-6 rounded-t-none md:rounded-tr-lg md:rounded-l-none'> Search</button>

@@ -41,6 +41,7 @@ export const AdminAllBooks = () => {
     <React.Fragment>
         <AdminViewAll type={'book'} addIcon={<BiBookAdd/>}>
             {
+                Books&&
                 Books.map((book,i)=>{
                 return(
                     <motion.span key={i} variants={cardChildVariants} className=' hover:bg-primary hover:text-slate-50 transition duration-300 pb-4'>
