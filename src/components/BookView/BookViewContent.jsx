@@ -5,9 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { BookViewContentContainerVariants, BookViewContentTextVariants } from './../../animations/viewBook';
 import { ADMIN, APPROVED, AVAILABLE, DECLINED, READER, REQUESTED } from './../../Redux/Types';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios' 
 export const BookViewContent = ({book,id}) => {
+    const navigate = useNavigate()
     const userIdRef = useRef(null)
     const User = useSelector((state)=>state.user.currentUser)
     userIdRef.current = User.user_id? User.user_id:userIdRef.current
@@ -61,7 +62,7 @@ export const BookViewContent = ({book,id}) => {
                 bookStatus===APPROVED?<motion.a variants={BookViewContentTextVariants} href={`${book.pdf_url}`} download><button className='btn btn-primary btn-active w-full rounded-3xl capitalize'>Read Book</button></motion.a>:
                 <motion.button variants={BookViewContentTextVariants} className='btn btn-error rounded-3xl capitalize cursor-default'>Request Declined</motion.button>
                 : User.type ===ADMIN&&
-                <motion.button variants={BookViewContentTextVariants}  className='btn btn-primary rounded-3xl capitalize'><Link to={`/admin/add-edit-book/${id}`}>Modify book</Link></motion.button>
+                <motion.button variants={BookViewContentTextVariants} onClick={()=>navigate(`/admin/add-edit-book/${id}`)}  className='btn btn-primary rounded-3xl capitalize'>Modify book</motion.button>
             }
         <ToastContainer transition={Zoom} />
         </motion.div>

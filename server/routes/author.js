@@ -27,15 +27,34 @@ router.get("/getAllAuthors", async (req, res) => { // GET ALL AUTHORS "just name
 
   res.status(200).json(author);
 });
-router.get("/getAuthor/:author", async (req, res) => { // GET AUTHOR'S BOOKS
-    const query = util.promisify(conn.query).bind(conn);
+router.get("/getAuthor/:author/:page", async (req, res) => { // GET AUTHOR'S BOOKS
     const {author} = req.params;
-    const sql = `SELECT bookName, bookDescription, field from book WHERE author LIKE '%${author}%'`
-    const authorName = await query(sql);
+    const {page} = req.params;
 
-    if (!authorName[0]) {
-        res.status(404).json({ msg: "Author is not found !" });
-      }
-    res.status(200).json(authorName);
+    minPage = parseInt(page) * 12;
+    maxPage = minPage + 12;
+    
+    const query = util.promisify(conn.query).bind(conn);
+    const GetNumberOfBooks = util.promisify(conn.query).bind(conn);
+
+    const sql = `SELECT book.book_id, bookName, bookDescription, author, field, publicationDate, image_url, pdf_url, Count(*) AS 'CountChapters' FROM book 
+    right join chapter on book.book_id = chapter.book_id WHERE author ='${author}' GROUP BY chapter.book_id ORDER BY bookName ASC
+    LIMIT ${minPage}, ${maxPage}`
+    const books = await query(sql);
+
+    const numberOfBooks = await GetNumberOfBooks(`SELECT COUNT(*) AS 'CountBooks' FROM book WHERE author ='${author}'`);
+    const numberOfPages = Math.ceil(numberOfBooks[0].CountBooks / 12); 
+
+    books.map((book) => {
+      book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
+      book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
+    });
+
+    res.status(200).json({
+      books:books,
+      numberOfBooks: numberOfBooks,
+      numberOfPages: numberOfPages,
+      currentPage:+page
+    });
 });
 module.exports = router;

@@ -29,4 +29,5 @@ export const GET_CURRENT_BOOK = 'GET_CURRENT_BOOK'
 export const GET_REQUESTS = 'GET_REQUESTS'
 //AuthorsData types
 export const GET_AUTHORS = 'GET_AUTHORS'
+export const GET_AUTHORS_PAGE = 'GET_AUTHORS_PAGE'
 export const GET_SEARCH_HISTORY = 'GET_SEARCH_HISTORY'
