@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { SearchInput } from '../components/Search/SearchInput'
 import { motion } from 'framer-motion';
 import { BookGridViewSearch } from './../components/Search/BookGridViewSearch';
-import { cardChildVariants, childVariants, ContainerVariants } from './../animations/home';
+import { childVariants, ContainerVariants } from './../animations/home';
 import { ChangeDetailsNav, GetAllBooks, GetSearchedBooks } from '../Redux/actions/AllActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { SEARCH } from './../Redux/Types';
@@ -62,7 +62,6 @@ export const Search = () => {
               )
             })
             if(BooksCount.CountBooks!=filteredBooks.length){
-              console.log(BooksCount);
                 setBooksCount((booksCount)=>booksCount.CountBooks = filteredBooks.length)
             }
           return(

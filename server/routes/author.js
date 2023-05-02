@@ -20,7 +20,13 @@ router.get("/getAllAuthors/:page", async (req, res) => {
         currentPage:+page
       });
 });
+router.get("/getAllAuthors", async (req, res) => { // GET ALL AUTHORS "just name"
+  const query = util.promisify(conn.query).bind(conn);
+  const sql = `SELECT DISTINCT author from book ORDER BY author ASC`
+  const author = await query(sql);
 
+  res.status(200).json(author);
+});
 router.get("/getAuthor/:author", async (req, res) => { // GET AUTHOR'S BOOKS
     const query = util.promisify(conn.query).bind(conn);
     const {author} = req.params;

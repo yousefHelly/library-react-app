@@ -46,7 +46,6 @@ export const GetAllBooks = (page=0)=>{
 export const GetCategoryBooks = (category,page=0)=>{
     return async(dispatch)=>{
         const booksData = await axios.get(`http://localhost:4000/field/${category}/${page}}`)
-        console.log(booksData);
         dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
     }
 }
@@ -83,6 +82,12 @@ export const GetUserRequests = (currentUser)=>{
 export const GetAllAuthors = (page=0)=>{
     return async(dispatch)=>{
         const authorsData = await axios.get(`http://localhost:4000/getAllAuthors/${page}`)
+        dispatch({type:GET_AUTHORS,Authors:authorsData.data,totalPages:authorsData.data.numberOfPages,currentPage:authorsData.data.currentPage})
+    }
+}
+export const GetAuthorsName = ()=>{
+    return async(dispatch)=>{
+        const authorsData = await axios.get(`http://localhost:4000/getAllAuthors`)
         dispatch({type:GET_AUTHORS,Authors:authorsData.data,totalPages:authorsData.data.numberOfPages,currentPage:authorsData.data.currentPage})
     }
 }

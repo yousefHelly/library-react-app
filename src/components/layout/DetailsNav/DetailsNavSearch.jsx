@@ -5,17 +5,17 @@ import * as Slider from '@radix-ui/react-slider';
 import { useSearchParams } from 'react-router-dom';
 import { cats } from '../../../Data';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllAuthors } from '../../../Redux/actions/AllActions';
+import { GetAuthorsName } from '../../../Redux/actions/AllActions';
 
 export const DetailsNavSearch = () => {
     const dispatch = useDispatch()
     const [authors,setAuthors] = useState([])
     useEffect(()=>{
-        dispatch(GetAllAuthors(0))
+        dispatch(GetAuthorsName())
     },[])
     const authorsData = useSelector((state)=>state.authorsData.Authors)
     useEffect(()=>{
-      setAuthors(authorsData.authors)
+      setAuthors(authorsData)
     },[authorsData])
 
     const [searchParams,setSearchParams] = useSearchParams()
