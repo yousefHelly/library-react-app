@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
 import {cardChildVariants} from '../../animations/home';
-import { BookGridViewSearch } from '../../components/Search/BookGridViewSearch';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllBooks } from '../../Redux/actions/AllActions';
 import { AdminViewAll } from '../../components/Admin/AdminViewAll';
 import { FaUserPlus } from 'react-icons/fa';
 import { FcApproval, FcHighPriority } from 'react-icons/fc';
 import { ACTIVE } from '../../Redux/Types';
+import { Pagination } from '../../components/layout/Pagination';
+import { GetAllUsers } from '../../Redux/actions/AllActions';
 export const AdminAllUsers = () => {
     const dispatch = useDispatch()
     const [users,setUsers] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedUser,setDeletedUser] = useState({})
+    const currentPage = useSelector((state)=>state.usersData.currentPage) || 0
     useEffect(()=>{
-            axios.get(`http://localhost:4000/reader`).then((res)=>{
-                setUsers(res.data)
-            })
+        dispatch(GetAllUsers(currentPage))
     },[users])
+    const usersData = useSelector((state)=>state.usersData)
+    useEffect(()=>{
+        setUsers(usersData.Users)
+    },[usersData])
+
     const showDeleteDialog=(user)=>{
         setDeleteDialog(true)
         setDeletedUser(user)
@@ -41,6 +45,8 @@ export const AdminAllUsers = () => {
     <React.Fragment>
         <AdminViewAll type={'user'} addIcon={<FaUserPlus/>}>
             {
+                users&&
+                users.length>0&&
                 users.map((user,i)=>{
                 return(
                     <motion.span key={i} variants={cardChildVariants} className='rounded-xl hover:bg-primary text-center hover:text-slate-50 transition flex flex-col gap-2 items-center duration-300 pb-4'>
@@ -82,6 +88,9 @@ export const AdminAllUsers = () => {
         }
         </AnimatePresence>
     <ToastContainer transition={Zoom}/>
+    <div className='w-full flex justify-center items-center'>
+        {users&&users.length>0&&<Pagination page='allUsers'/>}
+    </div>
     </React.Fragment>
     )
 }

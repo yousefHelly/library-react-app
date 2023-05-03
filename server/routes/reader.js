@@ -6,14 +6,31 @@ const { body, validationResult } = require("express-validator");
 //const bcrypt = require("bcrypt");
 const fs = require("fs");
 
-router.get("/reader", async (req, res) => {
-    const query = util.promisify(conn.query).bind(conn);
-    const sql = "SELECT userName, user_id, email, password, phone, status, image_url FROM user WHERE type = 'READER' ORDER BY userName ASC ";
-    const user = await query(sql);
-    user.map((user) => {
-        user.image_url = "http://" + req.hostname + ":4000/" + user.image_url;
+router.get("/readerPages/:page", async (req, res) => {
+  const {page} = req.params;
+  
+  minPage = parseInt(page) * 12;
+  maxPage = minPage + 12;
+  
+  const query = util.promisify(conn.query).bind(conn);
+  const GetNumberOfReaders = util.promisify(conn.query).bind(conn);
+
+  const sql = 
+  `SELECT user_id, userName, email, password, phone, status, image_url FROM user WHERE type = 'READER' 
+  ORDER BY userName ASC LIMIT ${minPage}, ${maxPage}`;
+  const users = await query(sql);
+  const numberOfReaders = await GetNumberOfReaders(`SELECT COUNT(*) AS 'CountReaders' FROM user WHERE type = 'READER' `);
+  const numberOfPages = Math.ceil(numberOfReaders[0].CountReaders / 12); 
+
+  users.map((user) => {
+      user.image_url = "http://" + req.hostname + ":4000/" + user.image_url;
+  });
+    res.status(200).json({
+      users:users,
+      numberOfReaders: numberOfReaders,
+      numberOfPages: numberOfPages,
+      currentPage:+page
     });
-      res.status(200).json(user);
 });
 
 

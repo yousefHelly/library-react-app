@@ -10,18 +10,22 @@ import { ToastContainer, Zoom, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetAllBooks } from '../../Redux/actions/AllActions';
 import { AdminViewAll } from '../../components/Admin/AdminViewAll';
+import { Pagination } from '../../components/layout/Pagination';
 export const AdminAllBooks = () => {
     const dispatch = useDispatch()
     const [Books,setBooks] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedBook,setDeletedBook] = useState({})
+    const currentPge = useSelector((state)=>state.booksData.currentPage) || 0
     useEffect(()=>{
-            dispatch(GetAllBooks())
+        dispatch(GetAllBooks(currentPge))
     },[])
-    const BooksData = useSelector((state)=>state.booksData.Books)
+    const booksData = useSelector((state)=>state.booksData.Books)
     useEffect(()=>{
-        setBooks(BooksData.books)
-    },[BooksData])
+        setBooks(booksData.books)
+        console.log(booksData);
+
+    },[booksData])
     const showDeleteDialog=(book)=>{
         setDeleteDialog(true)
         setDeletedBook(book)
@@ -70,6 +74,9 @@ export const AdminAllBooks = () => {
             </Dialog>
         }
         </AnimatePresence>
+        <div className='w-full flex justify-center items-center'>
+            {Books&&Books.length>0&&<Pagination/>}
+        </div>
     <ToastContainer transition={Zoom}/>
     </React.Fragment>
   )

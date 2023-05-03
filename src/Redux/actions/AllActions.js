@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR, GET_REQUESTS, GET_BOOKS, GET_CURRENT_BOOK, GET_AUTHORS, GET_SEARCH_HISTORY, GET_AUTHORS_PAGE } from '../Types';
+import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR, GET_REQUESTS, GET_BOOKS, GET_CURRENT_BOOK, GET_AUTHORS, GET_SEARCH_HISTORY, GET_AUTHORS_PAGE, GET_USERS } from '../Types';
 import { CHANGE_CURRENT_BOOK } from '../Types';
 import { HOME } from './../Types';
 
@@ -102,5 +102,12 @@ export const GetSearchHistory = (userId,page=0)=>{
     return async(dispatch)=>{
         const searchHistoryData = await axios.get(`http://localhost:4000/searchHistory/${userId}/${page}`)
         dispatch({type:GET_SEARCH_HISTORY,SearchHistory:searchHistoryData.data.searchHistory,totalPages:searchHistoryData.data.numberOfPages,currentPage:searchHistoryData.data.currentPage,userId:userId})
+    }
+}
+
+export const GetAllUsers = (page=0)=>{
+    return async(dispatch)=>{
+        const readerData = await axios.get(`http://localhost:4000/readerPages/${page}`)
+        dispatch({type:GET_USERS,Users:readerData.data.users,totalPages:readerData.data.numberOfPages,currentPage:readerData.data.currentPage})
     }
 }

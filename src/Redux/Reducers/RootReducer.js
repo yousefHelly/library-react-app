@@ -7,6 +7,7 @@ import { BooksDataReducer } from "./BooksDataReducer";
 import { RequestsReducer } from "./RequestsReducer";
 import { AuthorDataReducer } from "./AuthorsDataReducer";
 import { searchHistoryDataReducer } from "./SearchHistoryDataReducer";
+import { UsersDataReducer } from "./UsersDataReducer";
 
 export const RootReducer = 
     combineReducers(
@@ -18,6 +19,7 @@ export const RootReducer =
             booksData:BooksDataReducer,
             requestsData:RequestsReducer,
             authorsData:AuthorDataReducer,
-            searchHistoryData:searchHistoryDataReducer
+            searchHistoryData:searchHistoryDataReducer,
+            usersData:UsersDataReducer,
         }
     )
