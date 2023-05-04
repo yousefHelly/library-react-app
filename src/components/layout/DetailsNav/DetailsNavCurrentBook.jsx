@@ -47,7 +47,7 @@ export const DetailsNavCurrentBook = () => {
                     </motion.div>
                     <div className='flex flex-col items-start w-full overflow-y-auto max-h-20'>
                         <motion.h4 variants={plotVariants} className='text-xl'>Plot</motion.h4>
-                        <motion.p variants={plotTextVariants} className='sec w-60'>{book.bookDescription}</motion.p>
+                        <motion.bdi variants={plotTextVariants} className='sec w-60'>{book.bookDescription}</motion.bdi>
                     </div>
                <Link className='w-full' to={`/${book.book_id}`}><motion.button variants={bookViewBtn} className='w-full btn btn-primary rounded-3xl'> View</motion.button></Link>
             </motion.div>
