@@ -26,7 +26,7 @@ export const DetailsNavBookView = () => {
                         
                         <Accordion.Item key={i} className='AccordionItem overflow-hidden mt-[1px] focus-within:shadow-md focus-within:relative focus-within:z-[1]' value={`item-${i+1}`}>
                         <Accordion.Header className="AccordionHeader flex">
-                            <Accordion.Trigger className='AccordionTrigger shadow-sm hover:bg-primary aria-expanded:bg-primary transition duration-300 aria-expanded:rounded-t-xl text-start'>{chapter.title}
+                            <Accordion.Trigger className='AccordionTrigger shadow-sm hover:bg-primary aria-expanded:bg-primary transition duration-300 aria-expanded:rounded-t-xl text-start'><bdi className='w-full pr-6'>{chapter.title}</bdi>
                             <FaChevronDown className='AccordionChevron'/>
                             </Accordion.Trigger>
                         </Accordion.Header>

@@ -48,7 +48,7 @@ export const BookViewContent = ({book,id}) => {
     <React.Fragment>
         <motion.div variants={BookViewContentContainerVariants} initial='init' animate='show' className='col-span-3'>
             <motion.h3 variants={BookViewContentTextVariants} className='text-4xl font-bold'>Plot</motion.h3>
-            <motion.p variants={BookViewContentTextVariants} className='p-4'>{book.bookDescription}</motion.p>
+            <div className='grid py-2 pr-2'><motion.bdi variants={BookViewContentTextVariants} className='p-4 w-full'>{book.bookDescription}</motion.bdi></div>
         </motion.div>
         <motion.div variants={BookViewContentContainerVariants} initial='init' animate='show' className='col-span-1 flex flex-col gap-3'>
             <motion.div variants={BookViewContentTextVariants} className='text-md font-bold'>Publication Date: <span className='font-normal sec'>{book.publicationDate}</span></motion.div>

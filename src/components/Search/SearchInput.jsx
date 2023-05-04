@@ -12,21 +12,16 @@ export const SearchInput = () => {
     const [searchParams,setSearchParams] = useSearchParams()
     const [history,setHistory] = useState([])
     const searchInput = useRef(0)
+    const userIdRef = useRef(0)
     const dispatch = useDispatch()
     const User = useSelector((state)=>state.user.currentUser)
-    const LastPage = useSelector((state)=>state.searchHistoryData.totalPages)
-    let [searchData,setSearchData] = useState([])
+    userIdRef.current = User.user_id? User.user_id:userIdRef.current
     useEffect(()=>{
-      dispatch(GetSearchHistory(User.user_id,LastPage))
-    },[])
+      dispatch(GetSearchHistory(userIdRef.current,0))
+    },[userIdRef.current])
     const searchHistoryData = useSelector((state)=>state.searchHistoryData.SearchHistory)
     useEffect(()=>{
       setHistory(searchHistoryData)
-      setSearchData(history.filter((sh,i)=>{
-        if(i>history.length-4 && i<history.length){
-          return(sh)
-        }
-      }))
     },[searchHistoryData])
     const PreviousSearch = (e)=>{
       const string = e.target.childNodes[0].textContent
@@ -34,14 +29,15 @@ export const SearchInput = () => {
       searchInputHandler(string)
     }
     const searchInputHandler = (string = searchInput.current.value)=>{
-      console.log(User.user_id);
-      console.log(searchInput.current.value);
       if(searchInput.current.value===''){
         dispatch(GetAllBooks())
       }else{
-        dispatch(GetSearchedBooks(User.user_id,string))
+        dispatch(GetSearchedBooks(userIdRef.current,string))
       }
       setSearchHistory(false)
+      setTimeout(()=>{
+        dispatch(GetSearchHistory(userIdRef.current,0))
+      },100)
     }
     const openHideHistory = ()=>{
       searchInput.current.value===''&& dispatch(GetAllBooks())
@@ -62,13 +58,13 @@ export const SearchInput = () => {
         <motion.div key='searchHistory' variants={searchHistoryVariants} initial='init' animate='show' exit='leave' className='absolute top-full shadow-none rounded-t-none dropdown-content menu bg-white rounded-box w-[275px] md:w-[375px]'>
         <div className='flex sec flex-col'>
         {
-          (searchData[2]&&searchData[2]!='')&&<p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>{searchData[2]&&searchData[2].search}<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
-        }
-        {
-          (searchData[1]&&searchData[1]!='')&&<p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>{searchData[1]&&searchData[1].search}<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
-        }
-        {
-          (searchData[0]&&searchData[0]!='')&&<p onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>{searchData[0]&&searchData[0].search}<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
+          history.map((history,i)=>{
+            while(i<3){
+              return(
+                (history&&history!='')&&<p key={i} onClick={(e)=>PreviousSearch(e)} className='border-b px-4 flex justify-between items-center cursor-pointer hover:bg-primary hover:text-slate-50 py-3 transition duration-150'>{history&&history.search}<MdOutlineYoutubeSearchedFor className='text-xl'/></p>
+              )
+            }
+          })
         }
         <Link to='/settings/search-history' className='sec text-center cursor-pointer py-1'>view all history</Link>
       </div>
