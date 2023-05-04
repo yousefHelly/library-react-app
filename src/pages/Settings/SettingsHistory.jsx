@@ -8,15 +8,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BiMessageAltError } from 'react-icons/bi';
 import { GetSearchHistory } from '../../Redux/actions/AllActions';
 import { Pagination } from '../../components/layout/Pagination';
+import { useRef } from 'react';
 
 export const SettingsHistory = () => {
   const [history,setHistory] = useState([])
+  const userIdRef = useRef()
   const User = useSelector((state)=>state.user.currentUser)
+  userIdRef.current = User.user_id? User.user_id:userIdRef.current
   const currentPage = useSelector((state)=>state.searchHistoryData.currentPage)
   const dispatch =  useDispatch()
   useEffect(()=>{
-    dispatch(GetSearchHistory(User.user_id,currentPage))
-  },[])
+    dispatch(GetSearchHistory(userIdRef.current,currentPage))
+  },[userIdRef.current])
   const searchHistoryData = useSelector((state)=>state.searchHistoryData.SearchHistory)
   useEffect(()=>{
     setHistory(searchHistoryData)

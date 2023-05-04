@@ -8,22 +8,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SEARCH } from './../Redux/Types';
 import { useSearchParams } from 'react-router-dom';
 import { BiMessageAltError } from 'react-icons/bi';
+import { useRef } from 'react';
 
 export const Search = () => {
   const dispatch = useDispatch()
   const [searchParams,setSearchParams] = useSearchParams()
   const [Books,setBooks] = useState([])
+  const userIdRef = useRef(-1)
   const [BooksCount,setBooksCount] = useState([])
   const User = useSelector((state)=>state.user.currentUser)
+  userIdRef.current = User.user_id? User.user_id:userIdRef.current
   let count = 0
   useEffect(
     ()=>{
-      searchParams.get('value')?dispatch(GetSearchedBooks(User.user_id,searchParams.get('value'))):dispatch(GetAllBooks(0))
       document.title = `Library | Search`
       dispatch(ChangeDetailsNav(SEARCH))
-    }
-    ,[]
-  )
+    },[])
+    useEffect(()=>{
+      (searchParams.get('value')&&userIdRef.current!=-1)?dispatch(GetSearchedBooks(userIdRef.current,searchParams.get('value'))):dispatch(GetAllBooks(0))
+      ,[userIdRef]
+    })
   const BooksData = useSelector((state)=>state.booksData.Books)
   useEffect(
     ()=>{
