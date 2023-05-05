@@ -18,11 +18,11 @@ export const SettingsHistory = () => {
   const currentPage = useSelector((state)=>state.searchHistoryData.currentPage)
   const dispatch =  useDispatch()
   useEffect(()=>{
-    dispatch(GetSearchHistory(userIdRef.current,currentPage))
+    userIdRef.current&&dispatch(GetSearchHistory(userIdRef.current,currentPage))
   },[userIdRef.current])
   const searchHistoryData = useSelector((state)=>state.searchHistoryData.SearchHistory)
   useEffect(()=>{
-    setHistory(searchHistoryData)
+    searchHistoryData.length>0&&setHistory(searchHistoryData)
   },[searchHistoryData])
   return (
     <motion.div  variants={ContainerVariants} initial='init' animate='show' className='flex flex-col gap-6'>

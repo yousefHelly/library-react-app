@@ -12,12 +12,12 @@ export const SearchInput = () => {
     const [searchParams,setSearchParams] = useSearchParams()
     const [history,setHistory] = useState([])
     const searchInput = useRef(0)
-    const userIdRef = useRef(0)
+    const userIdRef = useRef(-1)
     const dispatch = useDispatch()
     const User = useSelector((state)=>state.user.currentUser)
     userIdRef.current = User.user_id? User.user_id:userIdRef.current
     useEffect(()=>{
-      dispatch(GetSearchHistory(userIdRef.current,0))
+      (userIdRef.current&&userIdRef.current!=-1)&&dispatch(GetSearchHistory(userIdRef.current,0))
     },[userIdRef.current])
     const searchHistoryData = useSelector((state)=>state.searchHistoryData.SearchHistory)
     useEffect(()=>{
@@ -30,7 +30,7 @@ export const SearchInput = () => {
     }
     const searchInputHandler = (string = searchInput.current.value)=>{
       if(searchInput.current.value===''){
-        dispatch(GetAllBooks())
+        dispatch(GetAllBooks(0))
       }else{
         dispatch(GetSearchedBooks(userIdRef.current,string))
       }
@@ -39,8 +39,13 @@ export const SearchInput = () => {
         dispatch(GetSearchHistory(userIdRef.current,0))
       },100)
     }
+    const handleKeyDown = (event)=>{
+      if(event.key==='Enter' && searchInput.current.value!=''){
+          searchInputHandler()
+      }
+  }
     const openHideHistory = ()=>{
-      searchInput.current.value===''&& dispatch(GetAllBooks())
+      searchInput.current.value===''&& dispatch(GetAllBooks(0))
       searchInput.current.value!=''?setSearchHistory(true):setSearchHistory(false)
     }
     useEffect(()=>{
@@ -50,7 +55,7 @@ export const SearchInput = () => {
     <motion.div  className='searchContainer w-full h-40 relative'>
     <motion.div variants={searchInputVariants} initial='init' animate='show' className='absolute shadow-xl z-10 items-center left-1/2 -bottom-5 -translate-x-1/2 flex flex-col md:flex-row'>
       <FaSearch className='text-2xl absolute z-10 -translate-x-28 translate-y-3 md:translate-x-4 md:translate-y-0 text-zinc-400'/>
-      <input onBlur={()=>setSearchHistory(false)} ref={searchInput} onChange={()=>openHideHistory()} type="search" className='h-12 pl-14 pr-4 py-3 w-[275px] md:w-[375px] rounded rounded-r-none focus-within:outline-none' placeholder='Search...' />
+      <input onKeyDown={handleKeyDown} onBlur={()=>setSearchHistory(false)} ref={searchInput} onChange={()=>openHideHistory()} type="search" className='h-12 pl-14 pr-4 py-3 w-[275px] md:w-[375px] rounded rounded-r-none focus-within:outline-none' placeholder='Search...' />
       <button onClick={()=>searchInputHandler()} className='btn btn-secondary w-full md:w-28 px-6 rounded-t-none md:rounded-tr-lg md:rounded-l-none'> Search</button>
       <AnimatePresence>
       {

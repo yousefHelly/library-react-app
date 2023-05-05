@@ -26,16 +26,13 @@ export const Search = () => {
     },[])
     useEffect(()=>{
       (searchParams.get('value')&&userIdRef.current!=-1)?dispatch(GetSearchedBooks(userIdRef.current,searchParams.get('value'))):dispatch(GetAllBooks(0))
-      ,[userIdRef]
-    })
+    },[userIdRef.current])
   const BooksData = useSelector((state)=>state.booksData.Books)
   useEffect(
     ()=>{
-      setBooks( BooksData.books)
+      setBooks(BooksData.books)
       setBooksCount(BooksData.numberOfBooks&&BooksData.numberOfBooks[0])
-    },
-    [BooksData]
-  )
+    },[BooksData])
   return (
     <motion.div variants={ContainerVariants} initial='init' animate='show' exit='leave' className='h-screen'>
       <SearchInput/>
