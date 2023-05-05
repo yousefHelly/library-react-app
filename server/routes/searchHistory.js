@@ -10,7 +10,7 @@ router.get("/searchHistory/:user_id/:page", async (req, res) => {
   const query = util.promisify(conn.query).bind(conn);
   const GetNumberOfSearches= util.promisify(conn.query).bind(conn);
 
-  const sql = `SELECT search, searchDate FROM search_history WHERE user_id = ${user_id} order by search_id desc LIMIT ${minPage}, ${maxPage} `;
+  const sql = `SELECT search, searchDate FROM search_history WHERE user_id = ${user_id} ORDER BY search_id DESC LIMIT ${minPage}, ${maxPage} `;
   const search_history = await query(sql);
   const numberOfSearches = await GetNumberOfSearches(`SELECT COUNT(*) AS 'CountSearch' FROM search_history WHERE user_id ='${user_id}'`);
   const numberOfPages = Math.ceil(numberOfSearches[0].CountSearch / 10); 
