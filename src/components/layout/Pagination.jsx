@@ -3,9 +3,10 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetAllAuthors, GetAllBooks, GetAllMyBooks, GetAllUsers, GetAuthorData, GetCategoryBooks, GetSearchHistory } from '../../Redux/actions/AllActions'
+import { GetAllAuthors, GetAllBooks, GetAllMyBooks, GetAllUsers, GetAuthorData, GetCategoryBooks, GetMyRequestedBooks, GetSearchHistory } from '../../Redux/actions/AllActions'
+import { REQUESTED } from '../../Redux/Types'
 
-export const Pagination = ({page='books',category,id ,author}) => {
+export const Pagination = ({page='books', category, id, status, author}) => {
     const dispatch = useDispatch()
     //books page
     const AllPages = useSelector((state)=>state.booksData.totalPages)
@@ -24,7 +25,13 @@ export const Pagination = ({page='books',category,id ,author}) => {
     const handlePageClick = (pageNum)=>{
         //dispatch(searchMovies(searchValue,pageNum.selected + 1))
         page==='books'&& !id?dispatch(GetAllBooks(pageNum.selected)):page==='category'?dispatch(GetCategoryBooks(category,pageNum.selected)):page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):page==='allUsers'?dispatch(GetAllUsers(pageNum.selected)):page==='authorProfile'?dispatch(GetAuthorData(author,pageNum.selected)): dispatch(GetAllAuthors(pageNum.selected))
-        id?page==='books'&&dispatch(GetAllMyBooks(id,pageNum.selected)):null
+        if(id && page==='books'){
+            if(status==='requested'){
+                dispatch(GetMyRequestedBooks(id,pageNum.selected))
+            }else{
+                dispatch(GetAllMyBooks(id,pageNum.selected))
+            }
+        }
         window.scrollTo({
             left:0,
             top:0,

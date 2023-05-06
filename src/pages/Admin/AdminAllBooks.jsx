@@ -16,9 +16,8 @@ export const AdminAllBooks = () => {
     const [Books,setBooks] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedBook,setDeletedBook] = useState({})
-    const currentPge = useSelector((state)=>state.booksData.currentPage) || 0
     useEffect(()=>{
-        dispatch(GetAllBooks(currentPge))
+        dispatch(GetAllBooks(0))
     },[])
     const booksData = useSelector((state)=>state.booksData.Books)
     useEffect(()=>{

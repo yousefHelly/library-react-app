@@ -15,9 +15,8 @@ export const Reading = () => {
   const userIdRef = useRef(null)
   userIdRef.current = User.user_id? User.user_id:userIdRef.current
   let count = 0;
-  const currentPage = useSelector((state)=>state.booksData.currentPage) || 0
   useEffect(()=>{
-    userIdRef.current&&dispatch(GetAllMyBooks(userIdRef.current,currentPage))
+    userIdRef.current&&dispatch(GetAllMyBooks(userIdRef.current,0))
   },[userIdRef.current])
   const booksData = useSelector((state)=>state.booksData.Books)
   useEffect(()=>{

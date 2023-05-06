@@ -43,10 +43,15 @@ export const GetAllBooks = (page=0)=>{
         dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
     }
 }
+export const GetMyRequestedBooks = (id,page=0)=>{
+    return async(dispatch)=>{
+        const booksData = await axios.get(`http://localhost:4000/getRequestedBooks/${id}/${page}`)
+        dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
+    }
+}
 export const GetAllMyBooks = (id,page=0)=>{
     return async(dispatch)=>{
         const booksData = await axios.get(`http://localhost:4000/getApprovedBooks/${id}/${page}`)
-        console.log(booksData.data);
         dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
     }
 }

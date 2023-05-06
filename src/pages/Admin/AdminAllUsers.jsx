@@ -17,9 +17,8 @@ export const AdminAllUsers = () => {
     const [users,setUsers] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedUser,setDeletedUser] = useState({})
-    const currentPage = useSelector((state)=>state.usersData.currentPage) || 0
     useEffect(()=>{
-        dispatch(GetAllUsers(currentPage))
+        dispatch(GetAllUsers(0))
     },[users])
     const usersData = useSelector((state)=>state.usersData)
     useEffect(()=>{
