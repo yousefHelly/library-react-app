@@ -1,21 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { BookViewContentContainerVariants, BookViewContentTextVariants } from './../../animations/viewBook';
 import { motion } from 'framer-motion';
 import { ContainerVariants, cardChildVariants } from './../../animations/home';
 import { BookGridView } from './../home/BookGridView';
-import { useDispatch, useSelector } from 'react-redux';
-import { ChangeCurrent, GetAllBooks } from '../../Redux/actions/AllActions';
 import { BiMessageAltError } from 'react-icons/bi';
 export const AuthorProfileContent = ({authorData,booksCount,authorName}) => {
-    const[Books,setBooks] = useState([])
-    const dispatch = useDispatch()
-    useEffect(()=>{
-        dispatch(GetAllBooks(0))
-    },[])
-    const booksData = useSelector((state)=>state.booksData.Books)
-    useEffect(()=>{
-        setBooks(booksData.books)
-      },[booksData])
   return (
     <React.Fragment>
     <div className='grid mb-8 grid-cols-4'>
@@ -31,24 +20,16 @@ export const AuthorProfileContent = ({authorData,booksCount,authorName}) => {
             <motion.h3 variants={BookViewContentTextVariants} initial='init' animate='show' className='text-xl my-5 font-bold'>{authorName} All Books</motion.h3>
             <motion.div variants={ContainerVariants} initial='init' animate='show' className='suggested books p-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
                 {
-                Books&&
-                Books.length>0?
-                Books.map(
-                (book,i)=>
-                {
-                    return(
-                        authorData.map((auth)=>{
+                    authorData.length>0?
+                        authorData.map((auth,i)=>{
                             return(
-                                book.bookName===auth.bookName&&<motion.span key={i} variants={cardChildVariants}><BookGridView book={book} index={book.book_id}/></motion.span>
+                                <motion.span key={i} variants={cardChildVariants}><BookGridView book={auth} index={auth.book_id}/></motion.span>
                             )
-                        })
-                    )
-                })
-                :
-                <div className='flex flex-col col-span-full items-center h-80 justify-center p-8'>
-                <BiMessageAltError className='text-5xl text-primary'/>
-                <h3 className='text-xl'>No Books Available</h3>
-                </div>
+                        }):                
+                        <div className='flex flex-col col-span-full items-center h-80 justify-center p-8'>
+                        <BiMessageAltError className='text-5xl text-primary'/>
+                        <h3 className='text-xl'>No Books Available</h3>
+                        </div>
                 }
             </motion.div>
     </motion.div>

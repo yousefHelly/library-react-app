@@ -8,9 +8,10 @@ import Select from 'react-select';
 import { FileUpload } from '../../components/Admin/FileUpload';
 import axios from 'axios';
 import { MdError } from 'react-icons/md';
-import { useSelector } from 'react-redux';
-import { ACTIVE, ADMIN, INACTIVE, READER } from '../../Redux/Types';
+import { useDispatch, useSelector } from 'react-redux';
+import { ACTIVE, ADMIN, FAILED, INACTIVE, READER, SUCCESS } from '../../Redux/Types';
 import { ImEye, ImEyeBlocked } from 'react-icons/im';
+import { ShowNotification } from '../../Redux/actions/AllActions';
 const StatusOptions = []
 const Status = [ACTIVE,INACTIVE]
 Status.map((status)=>{
@@ -25,6 +26,7 @@ export const AdminAddEditUser = () => {
     const User = useSelector((state)=>state.user.currentUser)
     const [currentUser,setCurrentUser] = useState({})
     const [showPassword,setShowPassword] = useState(false)
+    const dispatch = useDispatch()
     useEffect(()=>{
         if(id && User.type===ADMIN){
             const UserData = axios.get(`http://localhost:4000/reader/${id}`)
@@ -99,8 +101,6 @@ export const AdminAddEditUser = () => {
         (values)=>{
             //set image and pdf values to their files to pass them to multer 
             const fullName = `${values.FirstName} ${values.LastName}`
-            console.log(ImgRef.current.files[0]);
-            console.log(values);
             if(id){
                 //send book data without pdf and chapters 
                 axios.put(`http://localhost:4000/reader/${id}`,{
@@ -112,6 +112,16 @@ export const AdminAddEditUser = () => {
                     image:ImgRef.current.files[0],
                     type:READER
                 },{headers:{'Content-Type':'multipart/form-data'}})
+                .then((res)=>{
+                    dispatch(ShowNotification(res.data.msg,SUCCESS))
+                    setTimeout(()=>{
+                        navigate('/admin/all-users')
+                    },1000)
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    //dispatch(ShowNotification(err.response.data.errors[0].msg,FAILED))
+                })
             }
             else{
                 //send book data without pdf and chapters 
@@ -125,10 +135,18 @@ export const AdminAddEditUser = () => {
                     type:READER
                 }
                 ,{headers:{'Content-Type':'multipart/form-data'}})
+                .then((res)=>{
+                    console.log(res);
+                    dispatch(ShowNotification(res.data.msg,SUCCESS))
+                    setTimeout(()=>{
+                        navigate('/admin/all-users')
+                    },1000)
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    //dispatch(ShowNotification(err.response.data.errors[0].msg,FAILED))
+                })
         }
-        setTimeout(()=>{
-            navigate('/admin/all-users')
-        },1000)
     }
 }
     validationSchema={AddEditValidation}

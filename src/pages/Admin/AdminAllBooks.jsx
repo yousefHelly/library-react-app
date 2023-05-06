@@ -8,24 +8,23 @@ import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllBooks } from '../../Redux/actions/AllActions';
+import { GetAllBooks, ShowNotification } from '../../Redux/actions/AllActions';
 import { AdminViewAll } from '../../components/Admin/AdminViewAll';
 import { Pagination } from '../../components/layout/Pagination';
+import { SUCCESS } from '../../Redux/Types';
 export const AdminAllBooks = () => {
     const dispatch = useDispatch()
     const [Books,setBooks] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedBook,setDeletedBook] = useState({})
-    const currentPge = useSelector((state)=>state.booksData.currentPage) || 0
+    const currentPage = useSelector((state)=>state.booksData.currentPage) || 0
     useEffect(()=>{
-        dispatch(GetAllBooks(currentPge))
+        dispatch(GetAllBooks(currentPage))
     },[])
     const booksData = useSelector((state)=>state.booksData.Books)
     useEffect(()=>{
         setBooks(booksData.books)
-        console.log(booksData);
-
-    },[booksData])
+    },[booksData.books])
     const showDeleteDialog=(book)=>{
         setDeleteDialog(true)
         setDeletedBook(book)
@@ -34,11 +33,8 @@ export const AdminAllBooks = () => {
         const deleteBook =  await axios.delete(`http://localhost:4000/books/${deletedBook.book_id}`)
         const res =  await deleteBook.data
         setDeleteDialog(false)
-        console.log(res.msg);
-        toast.success(res.msg,{
-            theme:'dark',
-            position:'top-right'
-        })
+        dispatch(GetAllBooks(currentPage))
+        dispatch(ShowNotification(res.msg,SUCCESS))
     }
 
   return (
@@ -77,7 +73,6 @@ export const AdminAllBooks = () => {
         <div className='w-full flex justify-center items-center'>
             {Books&&Books.length>0&&<Pagination/>}
         </div>
-    <ToastContainer transition={Zoom}/>
     </React.Fragment>
   )
 }

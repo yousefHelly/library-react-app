@@ -4,7 +4,7 @@ const conn = require("../db/connection");
 const util = require("util");
 const { body, validationResult } = require("express-validator");
 
-router.get("/request/:reader_id/:book_id", async (req, res) => { // Get User Requests by his name
+router.get("/request/:reader_id/:book_id", async (req, res) => { // Get User Requests by his id for a specific book
     const query = util.promisify(conn.query).bind(conn);
     const data = req.params
     const sql = 

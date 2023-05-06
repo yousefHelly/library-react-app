@@ -8,10 +8,11 @@ import { Dialog } from '@headlessui/react'
 import { AnimatePresence , motion, useMotionValueEvent, useScroll} from 'framer-motion'
 import { DetailsNav } from './DetailsNav/DetailsNav';
 import { useDispatch, useSelector } from 'react-redux'
-import { openNav, closeNav } from '../../Redux/actions/AllActions'
+import { openNav, closeNav, ShowNotification } from '../../Redux/actions/AllActions'
 import CryptoJS,{ AES } from 'crypto-js'
-import { SECRET } from './../../Redux/Types';
+import { FAILED, SECRET, SUCCESS } from './../../Redux/Types';
 import { ChangeCurrentUser } from './../../Redux/actions/AllActions';
+import { ToastContainer, Zoom, toast } from 'react-toastify'
 const ScrollToTopBtn = ({currentPage})=>{
     const [showBtn, setShowBtn] = useState(false)
     const r = 20
@@ -44,6 +45,23 @@ export const NavBar = () => {
     const [searchQuery,setSearchQuery] = useState('')
     const sideNav = useSelector((state)=>state.nav.sideNavOpen)
     const dispatch = useDispatch()
+    const notificationMsg = useSelector((state)=>state.nav.notification.msg)
+    const notificationType = useSelector((state)=>state.nav.notification.type)
+    useEffect(()=>{
+        (notificationMsg&&notificationType===SUCCESS)?
+        toast.success(`${notificationMsg}`,{
+            position:'top-right',
+            theme:'dark'
+        }):(notificationMsg&&notificationType===FAILED)&&
+        toast.error(`${notificationMsg}`,{
+            position:'top-right',
+            theme:'dark'
+        })
+        setTimeout(()=>{
+            dispatch(ShowNotification(null,null))
+        },5000)
+    },[notificationMsg])
+
     const searchText =()=>{
         if(searchInput.current.value != ''){
             setSearchIcon(false)
@@ -117,6 +135,7 @@ export const NavBar = () => {
                     </div>
                 }
         </div>
+        <ToastContainer transition={Zoom}/>
     </React.Fragment>
   )
 }

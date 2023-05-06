@@ -25,7 +25,7 @@ router.get("/readerPages/:page", async (req, res) => {
   users.map((user) => {
       user.image_url = "http://" + req.hostname + ":4000/" + user.image_url;
   });
-    res.status(200).json({
+  return res.status(200).json({
       users:users,
       numberOfReaders: numberOfReaders,
       numberOfPages: numberOfPages,
@@ -40,10 +40,10 @@ router.get("/reader/:user_id", async (req, res) => {
       req.params.user_id,
     ]);
     if (!user[0]) {
-      res.status(404).json({ msg: "User is not found !" });
+      return res.status(404).json({ msg: "User is not found !" });
     }
     user[0].image_url = "http://" + req.hostname + ":4000/" + user[0].image_url;
-    res.status(200).json(user[0]);
+    return res.status(200).json(user[0]);
 });
 
 router.post("/reader", 
@@ -74,7 +74,7 @@ router.post("/reader",
     );
     
     if (checkEmailExists.length > 0) {
-      res.status(400).json({
+      return res.status(400).json({
         errors: [
           {
             msg: "This E-mail already exists !",
@@ -104,10 +104,10 @@ router.post("/reader",
     };
 
     await query("INSERT INTO user SET ?", user);
-    res.status(200).json(user);
+    return res.status(200).json(user);
 
   } catch(err){
-      res.status(500).json({err: err});
+    return res.status(500).json({err: err});
   }
 });
 
@@ -122,11 +122,11 @@ router.put("/inactiveReaderAccount/:user_id", async (req, res) => {
 
       await query("UPDATE user SET ? WHERE ?", [{status: "INACTIVE"}, {user_id : user_id}]);
 
-      res.status(200).json({
+      return res.status(200).json({
         msg: "User account inactivated",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
@@ -141,11 +141,11 @@ router.put("/activeReaderAccount/:user_id", async (req, res) => {
 
         await query("UPDATE user SET ? WHERE ?", [{status: "ACTIVE"}, {user_id : user_id}]);
   
-        res.status(200).json({
+        return res.status(200).json({
           msg: "User account activated",
         });
       } catch (err) {
-        res.status(500).json(err);
+        return res.status(500).json(err);
       }
 });
 
@@ -161,7 +161,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         req.params.user_id,
       ]);
       if (!user[0]) {
-        res.status(404).json({ msg: "User is not found !" });
+        return res.status(404).json({ msg: "User is not found !" });
       }
 
       const userObj = {
@@ -180,7 +180,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
 
       await query("UPDATE user SET ? WHERE user_id = ?", [userObj, user[0].user_id]);
 
-      res.status(200).json({
+      return res.status(200).json({
         user:{
           ...userObj,
           user_id:+req.params.user_id,
@@ -189,7 +189,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         msg: "User updated successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
@@ -201,15 +201,15 @@ router.delete("/reader/:user_id", async (req, res) => {
       ]);
 
       if (!user[0]) {
-        res.status(404).json({ msg: "User is not found !" });
+        return res.status(404).json({ msg: "User is not found !" });
       }
       fs.unlinkSync("./upload/" + user[0].image_url); // delete old image
       await query("DELETE FROM user WHERE user_id = ?", [user[0].user_id]);
-      res.status(200).json({
+      return res.status(200).json({
         msg: "User has been deleted successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
