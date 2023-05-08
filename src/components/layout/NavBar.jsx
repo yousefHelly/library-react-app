@@ -8,7 +8,7 @@ import { Dialog } from '@headlessui/react'
 import { AnimatePresence , motion, useMotionValueEvent, useScroll} from 'framer-motion'
 import { DetailsNav } from './DetailsNav/DetailsNav';
 import { useDispatch, useSelector } from 'react-redux'
-import { openNav, closeNav } from '../../Redux/actions/AllActions'
+import { openNav, closeNav, GetSearchHistory } from '../../Redux/actions/AllActions'
 import CryptoJS,{ AES } from 'crypto-js'
 import { SECRET } from './../../Redux/Types';
 import { ChangeCurrentUser } from './../../Redux/actions/AllActions';
@@ -62,12 +62,16 @@ export const NavBar = () => {
             navigate('/login')
         }
     },[])
+    const User = useSelector((state)=>state.user.currentUser)
     const currentPage = useSelector((state)=>state.detailsNav.currentBook)
     const handleKeyDown = (event)=>{
         if(event.key==='Enter' && searchQuery!=''){
             navigate(`/search?value=${searchQuery}`)
             searchInput.current.value = ''
             setSearchIcon(true)
+            setTimeout(()=>{
+                dispatch(GetSearchHistory(User.user_id,0))
+            },100)
         }
     }
   return (

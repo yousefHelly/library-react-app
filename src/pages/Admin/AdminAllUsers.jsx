@@ -17,10 +17,9 @@ export const AdminAllUsers = () => {
     const [users,setUsers] = useState([])
     const [deleteDialog,setDeleteDialog] = useState(false)
     const [deletedUser,setDeletedUser] = useState({})
-    const currentPage = useSelector((state)=>state.usersData.currentPage) || 0
     useEffect(()=>{
-        dispatch(GetAllUsers(currentPage))
-    },[users])
+        dispatch(GetAllUsers(0))
+    },[])
     const usersData = useSelector((state)=>state.usersData)
     useEffect(()=>{
         setUsers(usersData.Users)
@@ -35,7 +34,7 @@ export const AdminAllUsers = () => {
         const deleteUser =  await axios.delete(`http://localhost:4000/reader/${deletedUser.user_id}`)
         const res =  await deleteUser.data
         setDeleteDialog(false)
-        console.log(res.msg);
+        dispatch(GetAllUsers(0))
         toast.success(res.msg,{
             theme:'dark',
             position:'top-right'

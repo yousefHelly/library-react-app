@@ -9,11 +9,13 @@ import { SEARCH } from './../Redux/Types';
 import { useSearchParams } from 'react-router-dom';
 import { BiMessageAltError } from 'react-icons/bi';
 import { useRef } from 'react';
+import { Pagination } from '../components/layout/Pagination';
 
 export const Search = () => {
   const dispatch = useDispatch()
   const [searchParams,setSearchParams] = useSearchParams()
   const [Books,setBooks] = useState([])
+  const [pagination,setPagination] = useState(true)
   const userIdRef = useRef(-1)
   const [BooksCount,setBooksCount] = useState([])
   const User = useSelector((state)=>state.user.currentUser)
@@ -25,7 +27,7 @@ export const Search = () => {
       dispatch(ChangeDetailsNav(SEARCH))
     },[])
     useEffect(()=>{
-      (searchParams.get('value')&&userIdRef.current!=-1)?dispatch(GetSearchedBooks(userIdRef.current,searchParams.get('value'))):dispatch(GetAllBooks(0))
+      (userIdRef.current!=-1&&searchParams.get('value')!='')&&dispatch(GetSearchedBooks(userIdRef.current,searchParams.get('value'),0))
     },[userIdRef.current])
   const BooksData = useSelector((state)=>state.booksData.Books)
   useEffect(
@@ -65,6 +67,11 @@ export const Search = () => {
             if(BooksCount.CountBooks!=filteredBooks.length){
                 setBooksCount((booksCount)=>booksCount.CountBooks = filteredBooks.length)
             }
+            if(filteredBooks.length===0 && pagination){
+              setPagination(false)
+            }else if(filteredBooks.length>0 && !pagination){
+              setPagination(true)
+            }
           return(
             filteredBooks.map((filteredBook)=>{
               return (
@@ -90,6 +97,13 @@ export const Search = () => {
         </div>
       }
       </div>
+      {
+        (Books && pagination)&&
+        Books.length>0&&
+        <div className='w-full flex justify-center items-center'>
+        <Pagination page='search' id={userIdRef.current} />
+        </div>
+      }
     </motion.div>
   )
 }

@@ -12,10 +12,9 @@ import { BiMessageAltError } from 'react-icons/bi';
 export const Home = () => {
   const dispatch = useDispatch()
   const [Books,setBooks] = useState([])
-  const currentPge = useSelector((state)=>state.booksData.currentPage) || 0
     useEffect(()=>{
       document.title = 'Library | Home'
-      dispatch(GetAllBooks(currentPge))
+      dispatch(GetAllBooks(0))
     },[])
     useEffect(()=>{
       dispatch(ChangeDetailsNav(HOME))

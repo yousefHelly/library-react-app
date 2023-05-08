@@ -24,7 +24,9 @@ export const ACTIVE = 'ACTIVE'
 export const INACTIVE = 'INACTIVE'
 //BooksData types
 export const GET_BOOKS = 'GET_BOOKS'
+export const GET_SEARCH_BOOKS = 'GET_SEARCH_BOOKS'
 export const GET_CURRENT_BOOK = 'GET_CURRENT_BOOK'
+export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
 //Requests types
 export const GET_REQUESTS = 'GET_REQUESTS'
 //AuthorsData types
