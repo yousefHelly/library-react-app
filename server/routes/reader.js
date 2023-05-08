@@ -3,7 +3,7 @@ const conn = require("../db/connection");
 const uploadUserImage = require('../middleware/uploadImages');
 const util = require("util");
 const { body, validationResult } = require("express-validator");
-//const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const fs = require("fs");
 
 router.get("/readerPages/:page", async (req, res) => {
@@ -25,7 +25,7 @@ router.get("/readerPages/:page", async (req, res) => {
   users.map((user) => {
       user.image_url = "http://" + req.hostname + ":4000/" + user.image_url;
   });
-    res.status(200).json({
+  return res.status(200).json({
       users:users,
       numberOfReaders: numberOfReaders,
       numberOfPages: numberOfPages,
@@ -40,10 +40,10 @@ router.get("/reader/:user_id", async (req, res) => {
       req.params.user_id,
     ]);
     if (!user[0]) {
-      res.status(404).json({ msg: "User is not found !" });
+      return res.status(404).json({ msg: "User is not found !" });
     }
     user[0].image_url = "http://" + req.hostname + ":4000/" + user[0].image_url;
-    res.status(200).json(user[0]);
+    return res.status(200).json(user[0]);
 });
 
 router.post("/reader", 
@@ -74,7 +74,7 @@ router.post("/reader",
     );
     
     if (checkEmailExists.length > 0) {
-      res.status(400).json({
+      return res.status(400).json({
         errors: [
           {
             msg: "This E-mail already exists !",
@@ -96,7 +96,8 @@ router.post("/reader",
     const user = {
       userName: req.body.userName,
       email: req.body.email,
-      password: req.body.password,
+      // password: req.body.password,
+      password: await bcrypt.hash(req.body.password, 10),
       phone: req.body.phone,
       status:req.body.status,
       image_url: req.file.filename,
@@ -104,10 +105,10 @@ router.post("/reader",
     };
 
     await query("INSERT INTO user SET ?", user);
-    res.status(200).json(user);
+    return res.status(200).json(user);
 
   } catch(err){
-      res.status(500).json({err: err});
+    return res.status(500).json({err: err});
   }
 });
 
@@ -122,11 +123,11 @@ router.put("/inactiveReaderAccount/:user_id", async (req, res) => {
 
       await query("UPDATE user SET ? WHERE ?", [{status: "INACTIVE"}, {user_id : user_id}]);
 
-      res.status(200).json({
+      return res.status(200).json({
         msg: "User account inactivated",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
@@ -141,15 +142,28 @@ router.put("/activeReaderAccount/:user_id", async (req, res) => {
 
         await query("UPDATE user SET ? WHERE ?", [{status: "ACTIVE"}, {user_id : user_id}]);
   
-        res.status(200).json({
+        return res.status(200).json({
           msg: "User account activated",
         });
       } catch (err) {
-        res.status(500).json(err);
+        return res.status(500).json(err);
       }
 });
 
-router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res) => {
+router.put("/reader/:user_id",
+  body("email")
+  .isEmail()
+  .withMessage("Please enter a valid E-mail"),
+
+  body("userName")
+    .isString()
+    .withMessage("please enter a valid name"),
+
+  body("password")
+  .isLength({min: 8})
+  .withMessage("Password should be at least 8 characters"),
+
+  async (req, res) => {
     try {
       const query = util.promisify(conn.query).bind(conn);
       const errors = validationResult(req);
@@ -161,37 +175,55 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         req.params.user_id,
       ]);
       if (!user[0]) {
-        res.status(404).json({ msg: "User is not found !" });
+        return res.status(404).json({ msg: "User is not found !" });
       }
 
       const userObj = {
         userName: req.body.userName,
         email: req.body.email,
-        password: req.body.password,
+        // password: req.body.password,
+        password: await bcrypt.hash(req.body.password, 10),
         phone: req.body.phone,
         status:req.body.status,
         type:req.body.type
       };
 
-      if (req.file) {
-        userObj.image_url = req.file.filename;
-        fs.unlinkSync("./upload/" + user[0].image_url); // delete old image
-      }
-
       await query("UPDATE user SET ? WHERE user_id = ?", [userObj, user[0].user_id]);
 
-      res.status(200).json({
+      return res.status(200).json({
         user:{
           ...userObj,
           user_id:+req.params.user_id,
-          image_url : "http://" + req.hostname + ":4000/" + req.file.filename
         },
         msg: "User updated successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
+
+router.put("/updateImg/:user_id", 
+  uploadUserImage.single("image"),
+    async (req, res) => {
+        try {
+          const {user_id } = req.params;
+          const query = util.promisify(conn.query).bind(conn);
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
+
+          await query("UPDATE user SET ? WHERE ?", [{image_url: req.file.filename}, {user_id  : user_id}]);
+    
+          return res.status(200).json({
+            user_id  :+req.params.user_id,
+            image_url : "http://" + req.hostname + ":4000/" + req.file.filename
+          });
+        } catch (err) {
+          return res.status(500).json(err);
+        }
+      }
+);
 
 router.delete("/reader/:user_id", async (req, res) => {
     try {
@@ -201,15 +233,15 @@ router.delete("/reader/:user_id", async (req, res) => {
       ]);
 
       if (!user[0]) {
-        res.status(404).json({ msg: "User is not found !" });
+        return res.status(404).json({ msg: "User is not found !" });
       }
       fs.unlinkSync("./upload/" + user[0].image_url); // delete old image
       await query("DELETE FROM user WHERE user_id = ?", [user[0].user_id]);
-      res.status(200).json({
+      return res.status(200).json({
         msg: "User has been deleted successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 

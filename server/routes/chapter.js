@@ -14,7 +14,7 @@ router.get("/chapter", async (req, res) => { // Get All
 router.get("/chapter/:book_id", async (req, res) => {
     const query = util.promisify(conn.query).bind(conn);
     const {book_id} = req.params;
-    const sql = `SELECT chapter_id, title, chapterDescription FROM book JOIN chapter ON book.book_id = chapter. book_id WHERE book.book_id =${book_id}`;
+    const sql = `SELECT chapter_id, title, chapterDescription FROM chapter WHERE book_id =${book_id}`;
     const chapters = await query(sql);
     if (!chapters[0]) {
       return res.status(404).json({ msg: "Chapter is not found !" });

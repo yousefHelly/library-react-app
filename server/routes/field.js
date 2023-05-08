@@ -22,7 +22,7 @@ router.get("/field/:fieldName/:page", async (req, res) => {
         book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
         book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
     });
-    res.status(200).json({
+    return res.status(200).json({
       books:books,
       numberOfBooks: numberOfBooks,
       numberOfPages: numberOfPages,
