@@ -150,7 +150,7 @@ router.put("/activeReaderAccount/:user_id", async (req, res) => {
       }
 });
 
-router.put("/reader/:user_id", uploadUserImage.single("image"),
+router.put("/reader/:user_id",
   body("email")
   .isEmail()
   .withMessage("Please enter a valid E-mail"),
@@ -188,18 +188,12 @@ router.put("/reader/:user_id", uploadUserImage.single("image"),
         type:req.body.type
       };
 
-      if (req.file) {
-        userObj.image_url = req.file.filename;
-        fs.unlinkSync("./upload/" + user[0].image_url); // delete old image
-      }
-
       await query("UPDATE user SET ? WHERE user_id = ?", [userObj, user[0].user_id]);
 
       return res.status(200).json({
         user:{
           ...userObj,
           user_id:+req.params.user_id,
-          image_url : "http://" + req.hostname + ":4000/" + req.file.filename
         },
         msg: "User updated successfully",
       });
@@ -207,6 +201,29 @@ router.put("/reader/:user_id", uploadUserImage.single("image"),
       return res.status(500).json(err);
     }
 });
+
+router.put("/updateImg/:user_id", 
+  uploadUserImage.single("image"),
+    async (req, res) => {
+        try {
+          const {user_id } = req.params;
+          const query = util.promisify(conn.query).bind(conn);
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+          }
+
+          await query("UPDATE user SET ? WHERE ?", [{image_url: req.file.filename}, {user_id  : user_id}]);
+    
+          return res.status(200).json({
+            user_id  :+req.params.user_id,
+            image_url : "http://" + req.hostname + ":4000/" + req.file.filename
+          });
+        } catch (err) {
+          return res.status(500).json(err);
+        }
+      }
+);
 
 router.delete("/reader/:user_id", async (req, res) => {
     try {

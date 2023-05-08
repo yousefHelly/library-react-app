@@ -90,7 +90,6 @@ router.get("/declineRequest", async (req, res) => { // Get All DECLINED Requests
 });
 
 router.get("/getApprovedBooks/:reader_id/:page", async (req, res) => { // Get All APPROVED books To Read
-
     const {reader_id} = req.params;
     const {page} = req.params;
     minPage = parseInt(page) * 10;
