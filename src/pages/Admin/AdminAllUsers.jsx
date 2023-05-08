@@ -19,7 +19,7 @@ export const AdminAllUsers = () => {
     const [deletedUser,setDeletedUser] = useState({})
     useEffect(()=>{
         dispatch(GetAllUsers(0))
-    },[users])
+    },[])
     const usersData = useSelector((state)=>state.usersData)
     useEffect(()=>{
         setUsers(usersData.Users)
@@ -34,7 +34,7 @@ export const AdminAllUsers = () => {
         const deleteUser =  await axios.delete(`http://localhost:4000/reader/${deletedUser.user_id}`)
         const res =  await deleteUser.data
         setDeleteDialog(false)
-        console.log(res.msg);
+        dispatch(GetAllUsers(0))
         toast.success(res.msg,{
             theme:'dark',
             position:'top-right'

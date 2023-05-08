@@ -22,8 +22,6 @@ export const AdminAllBooks = () => {
     const booksData = useSelector((state)=>state.booksData.Books)
     useEffect(()=>{
         setBooks(booksData.books)
-        console.log(booksData);
-
     },[booksData])
     const showDeleteDialog=(book)=>{
         setDeleteDialog(true)
@@ -33,7 +31,7 @@ export const AdminAllBooks = () => {
         const deleteBook =  await axios.delete(`http://localhost:4000/books/${deletedBook.book_id}`)
         const res =  await deleteBook.data
         setDeleteDialog(false)
-        console.log(res.msg);
+        dispatch(GetAllBooks(0))
         toast.success(res.msg,{
             theme:'dark',
             position:'top-right'

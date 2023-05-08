@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetAllAuthors, GetAllBooks, GetAllMyBooks, GetAllUsers, GetAuthorData, GetCategoryBooks, GetMyRequestedBooks, GetSearchHistory } from '../../Redux/actions/AllActions'
+import { GetAllAuthors, GetAllBooks, GetAllMyBooks, GetAllUsers, GetAuthorData, GetCategoryBooks, GetMyRequestedBooks, GetSearchHistory, GetSearchedBooks } from '../../Redux/actions/AllActions'
 import { REQUESTED } from '../../Redux/Types'
 
 export const Pagination = ({page='books', category, id, status, author}) => {
@@ -21,9 +21,8 @@ export const Pagination = ({page='books', category, id, status, author}) => {
     const historyAllPages = useSelector((state)=>state.searchHistoryData.totalPages)
     const historyUserId = useSelector((state)=>state.searchHistoryData.userId)
     const historyCurrentPage = useSelector((state)=>state.searchHistoryData.currentPage)
-    //const searchValue = useSelector((state)=>state.searchValue)
+    const searchValue = useSelector((state)=>state.booksData.searchValue)
     const handlePageClick = (pageNum)=>{
-        //dispatch(searchMovies(searchValue,pageNum.selected + 1))
         page==='books'&& !id?dispatch(GetAllBooks(pageNum.selected)):page==='category'?dispatch(GetCategoryBooks(category,pageNum.selected)):page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):page==='allUsers'?dispatch(GetAllUsers(pageNum.selected)):page==='authorProfile'?dispatch(GetAuthorData(author,pageNum.selected)): dispatch(GetAllAuthors(pageNum.selected))
         if(id && page==='books'){
             if(status==='requested'){
@@ -31,6 +30,9 @@ export const Pagination = ({page='books', category, id, status, author}) => {
             }else{
                 dispatch(GetAllMyBooks(id,pageNum.selected))
             }
+        }
+        if(page==='search'){
+            dispatch(GetSearchedBooks(id,searchValue,pageNum.selected))
         }
         window.scrollTo({
             left:0,
@@ -51,7 +53,7 @@ export const Pagination = ({page='books', category, id, status, author}) => {
             onPageChange={handlePageClick}
             pageRangeDisplayed={range}
             marginPagesDisplayed={range}
-            pageCount={page==='books'|| page ==='category'?AllPages:page==='searchHistory'?historyAllPages:page==='allUsers'?usersAllPages:authorAllPages}
+            pageCount={page==='books'|| page ==='category' || page === 'search'?AllPages:page==='searchHistory'?historyAllPages:page==='allUsers'?usersAllPages:authorAllPages}
             previousLabel="Prev"
             containerClassName='btn-group justify-center m-4'
             pageClassName='btn btn-md px-0'
@@ -64,7 +66,7 @@ export const Pagination = ({page='books', category, id, status, author}) => {
             breakLinkClassName='w-full h-full flex justify-center items-center'
             activeClassName='btn btn-md btn-active'
             activeLinkClassName='w-full h-full flex justify-center items-center'
-            forcePage={page==='books'|| page ==='category'?currentPage:page==='searchHistory'?historyCurrentPage:page==='allUsers'?userCurrentPage:authorCurrentPage}
+            forcePage={page==='books'|| page ==='category' || page === 'search'?currentPage:page==='searchHistory'?historyCurrentPage:page==='allUsers'?userCurrentPage:authorCurrentPage}
         />
     </React.Fragment>
   )

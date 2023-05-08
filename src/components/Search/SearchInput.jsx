@@ -6,7 +6,7 @@ import { searchInputVariants } from '../../animations/search';
 import { searchHistoryVariants } from './../../animations/search';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllBooks, GetSearchHistory, GetSearchedBooks } from '../../Redux/actions/AllActions';
+import { GetAllBooks, GetSearchHistory, GetSearchedBooks, UpdateSearchValue } from '../../Redux/actions/AllActions';
 export const SearchInput = () => {
     const [searchHistory,setSearchHistory] = useState(false)
     const [searchParams,setSearchParams] = useSearchParams()
@@ -31,6 +31,7 @@ export const SearchInput = () => {
     const searchInputHandler = (string = searchInput.current.value)=>{
       if(searchInput.current.value===''){
         dispatch(GetAllBooks(0))
+        dispatch(UpdateSearchValue())
       }else{
         dispatch(GetSearchedBooks(userIdRef.current,string))
       }
@@ -45,7 +46,10 @@ export const SearchInput = () => {
       }
   }
     const openHideHistory = ()=>{
-      searchInput.current.value===''&& dispatch(GetAllBooks(0))
+      if(searchInput.current.value===''){
+        dispatch(GetAllBooks(0))
+        dispatch(UpdateSearchValue())
+      } 
       searchInput.current.value!=''?setSearchHistory(true):setSearchHistory(false)
     }
     useEffect(()=>{
