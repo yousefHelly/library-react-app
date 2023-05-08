@@ -161,7 +161,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         req.params.user_id,
       ]);
       if (!user[0]) {
-        res.status(404).json({ msg: "User is not found !" });
+        return res.status(404).json({ msg: "User is not found !" });
       }
 
       const userObj = {
@@ -180,7 +180,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
 
       await query("UPDATE user SET ? WHERE user_id = ?", [userObj, user[0].user_id]);
 
-      res.status(200).json({
+      return res.status(200).json({
         user:{
           ...userObj,
           user_id:+req.params.user_id,
@@ -189,7 +189,7 @@ router.put("/reader/:user_id", uploadUserImage.single("image"), async (req, res)
         msg: "User updated successfully",
       });
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
 });
 
