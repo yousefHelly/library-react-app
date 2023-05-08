@@ -7,7 +7,6 @@ import { ImEye, ImEyeBlocked } from 'react-icons/im';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { childVariants } from '../../animations/home';
-import { UserAvatar } from '../layout/UserAvatar';
 import axios from 'axios';
 import { FileUpload } from '../Admin/FileUpload';
 import { ACTIVE, SECRET } from '../../Redux/Types';
@@ -28,7 +27,7 @@ export const ProfileForm = () => {
     const navigate = useNavigate()
     const User = useSelector((state)=>state.user.currentUser)
     const AddEditValidation  = Yup.object({
-        Avatar:Yup.mixed().required('Avatar is Required')
+        Avatar:Yup.mixed()
         .test("is-img-to-big", "image exceeds 5MB", () => {
             let valid = true;
             const files = ImgRef?.current?.files;
@@ -90,15 +89,24 @@ export const ProfileForm = () => {
             password:values.Password,
             phone:values.Phone,
             status:ACTIVE,
-            image:ImgRef.current.files[0],
             type:User.type
-        },{headers:{'Content-Type':'multipart/form-data'}}).then(async(res)=>{
+        }).then(async(res)=>{
             const user = res.data.user
             const userSession = {...user, password:values.Password};
-            const decryptedUser = AES.encrypt(JSON.stringify(userSession),SECRET).toString()
-            sessionStorage.setItem('User',decryptedUser)          
-            dispatch(ChangeCurrentUser(userSession));
-            console.log(userSession);
+            if(ImgRef.current.files[0]){
+                axios.put(`http://localhost:4000/updateImg/${User.user_id}`,{
+                    image:ImgRef.current.files[0],
+                },{headers:{'Content-Type':'multipart/form-data'}})
+                const updatedUser = {...userSession,image_url:URL.createObjectURL(ImgRef.current.files[0])}
+                const decryptedUser = AES.encrypt(JSON.stringify(updatedUser),SECRET).toString()
+                sessionStorage.setItem('User',decryptedUser)          
+                dispatch(ChangeCurrentUser(updatedUser));
+            }else{
+                const updatedUser = {...userSession,image_url:User.image_url}
+                const decryptedUser = AES.encrypt(JSON.stringify(updatedUser),SECRET).toString()
+                sessionStorage.setItem('User',decryptedUser)          
+                dispatch(ChangeCurrentUser(updatedUser));
+            }
         })
         setTimeout(()=>{
             navigate('/')

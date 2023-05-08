@@ -1,6 +1,5 @@
 import React from 'react'
 import { ProfileForm } from '../../components/Settings/ProfileForm';
-import { UserAvatar } from '../../components/layout/UserAvatar';
 import { motion } from 'framer-motion';
 import { childVariants, ContainerVariants } from './../../animations/home';
 
