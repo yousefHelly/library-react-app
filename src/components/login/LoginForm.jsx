@@ -15,24 +15,28 @@ import { AES } from 'crypto-js';
 import {ImEye,ImEyeBlocked} from 'react-icons/im'
 import { SECRET } from './../../Redux/Types';
 import axios from 'axios';
+import { useRef } from 'react';
 export const LoginForm = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [showPassword,setShowPassword] = useState(false)
+    const passRef = useRef(null)
     const loginError = (msg)=>{
       toast.error(msg,{
         theme:'dark',
         position:'top-left'
       })
     }
-    const LogIn = ({login,message,user})=>{
+    const LogIn = ({login, message, user}, password)=>{
       if (login){
+        passRef.current = password
         navigate('/',{
           replace:true
         })
-        const decryptedUser = AES.encrypt(JSON.stringify(user),SECRET).toString()
+        const userSession = {...user, password:passRef.current};
+        const decryptedUser = AES.encrypt(JSON.stringify(userSession),SECRET).toString()
         sessionStorage.setItem('User',decryptedUser)          
-        dispatch(ChangeCurrentUser(user));
+        dispatch(ChangeCurrentUser(userSession));
       }else{
         loginError(message)
       }
@@ -62,7 +66,7 @@ export const LoginForm = () => {
           axios.post("http://localhost:4000/login",{
             email:email,
             password:password
-          }).then((res)=>LogIn(res.data)).catch((err)=>loginError(err.response.data.errors[0].msg))
+          }).then((res)=>LogIn(res.data,password)).catch((err)=>loginError(err.response.data.errors[0].msg))
       }
     }
     >{

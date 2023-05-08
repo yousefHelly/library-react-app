@@ -93,10 +93,12 @@ export const ProfileForm = () => {
             image:ImgRef.current.files[0],
             type:User.type
         },{headers:{'Content-Type':'multipart/form-data'}}).then(async(res)=>{
-            const user = await res.data.user
-            const decryptedUser = AES.encrypt(JSON.stringify(user),SECRET).toString()
+            const user = res.data.user
+            const userSession = {...user, password:values.Password};
+            const decryptedUser = AES.encrypt(JSON.stringify(userSession),SECRET).toString()
             sessionStorage.setItem('User',decryptedUser)          
-            dispatch(ChangeCurrentUser(res.data.user));
+            dispatch(ChangeCurrentUser(userSession));
+            console.log(userSession);
         })
         setTimeout(()=>{
             navigate('/')
