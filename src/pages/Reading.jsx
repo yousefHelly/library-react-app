@@ -13,6 +13,7 @@ export const Reading = () => {
   const [Books,setBooks] = useState([])
   const User = useSelector((state)=>state.user.currentUser)
   const userIdRef = useRef(null)
+  const getUserBooksRef = useRef(null)
   userIdRef.current = User.user_id? User.user_id:userIdRef.current
   let count = 0;
   useEffect(()=>{
@@ -20,7 +21,8 @@ export const Reading = () => {
   },[userIdRef.current])
   const booksData = useSelector((state)=>state.booksData.Books)
   useEffect(()=>{
-    setBooks(booksData.books)
+    getUserBooksRef.current++
+    getUserBooksRef.current===2&&setBooks(booksData.books)
   },[booksData])
   useEffect(
     ()=>{

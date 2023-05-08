@@ -100,7 +100,6 @@ export const AdminAddEditUser = () => {
             //set image and pdf values to their files to pass them to multer 
             const fullName = `${values.FirstName} ${values.LastName}`
             console.log(ImgRef.current.files[0]);
-            console.log(values);
             if(id){
                 //send book data without pdf and chapters 
                 axios.put(`http://localhost:4000/reader/${id}`,{
@@ -109,9 +108,13 @@ export const AdminAddEditUser = () => {
                     password:values.Password,
                     phone:values.Phone,
                     status:values.Status,
-                    image:ImgRef.current.files[0],
                     type:READER
-                },{headers:{'Content-Type':'multipart/form-data'}})
+                })
+                if(ImgRef.current.files[0]){
+                    axios.put(`http://localhost:4000/updateImg/${id}`,{
+                        image:ImgRef.current.files[0],
+                    },{headers:{'Content-Type':'multipart/form-data'}})
+                }
             }
             else{
                 //send book data without pdf and chapters 
