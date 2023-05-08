@@ -15,7 +15,7 @@ router.get("/searchHistory/:user_id/:page", async (req, res) => {
   const numberOfSearches = await GetNumberOfSearches(`SELECT COUNT(*) AS 'CountSearch' FROM search_history WHERE user_id ='${user_id}'`);
   const numberOfPages = Math.ceil(numberOfSearches[0].CountSearch / 10); 
 
-  res.status(200).json({
+  return res.status(200).json({
     searchHistory:search_history,
     numberOfSearches: numberOfSearches,
     numberOfPages: numberOfPages,

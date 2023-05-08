@@ -6,14 +6,14 @@ router.get("/getAllAuthors/:page", async (req, res) => {
     const query = util.promisify(conn.query).bind(conn);
     const GetNumberOfAuthors= util.promisify(conn.query).bind(conn);
     const {page} = req.params;
-    minPage = parseInt(page) * 20;
-    maxPage = minPage + 20;
+    minPage = parseInt(page) * 12;
+    maxPage = minPage + 12;
     const sql = `SELECT author, COUNT(*) AS 'NumberOfBooks' FROM book GROUP BY 
     author ORDER BY author ASC LIMIT ${minPage}, ${maxPage}`;
     const authors = await query(sql);
     const numberOfAuthors = await GetNumberOfAuthors(`SELECT COUNT(*) AS 'CountAuthors' FROM book`);
-    const numberOfPages = Math.ceil(numberOfAuthors[0].CountAuthors / 20); 
-    res.status(200).json({
+    const numberOfPages = Math.ceil(numberOfAuthors[0].CountAuthors / 12); 
+    return res.status(200).json({
         authors:authors,
         numberOfAuthors: numberOfAuthors,
         numberOfPages: numberOfPages,
@@ -25,7 +25,7 @@ router.get("/getAllAuthors", async (req, res) => { // GET ALL AUTHORS "just name
   const sql = `SELECT DISTINCT author from book ORDER BY author ASC`
   const author = await query(sql);
 
-  res.status(200).json(author);
+  return res.status(200).json(author);
 });
 router.get("/getAuthor/:author/:page", async (req, res) => { // GET AUTHOR'S BOOKS
     const {author} = req.params;
@@ -50,7 +50,7 @@ router.get("/getAuthor/:author/:page", async (req, res) => { // GET AUTHOR'S BOO
       book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       books:books,
       numberOfBooks: numberOfBooks,
       numberOfPages: numberOfPages,

@@ -4,7 +4,7 @@ const conn = require("../db/connection");
 const util = require("util");
 const { body, validationResult } = require("express-validator");
 
-router.get("/request/:reader_id/:book_id", async (req, res) => { // Get User Requests by his name
+router.get("/request/:reader_id/:book_id", async (req, res) => { // Get Reader Request to Specific book
     const query = util.promisify(conn.query).bind(conn);
     const data = req.params
     const sql = 
@@ -23,7 +23,7 @@ router.get("/request/:reader_id/:book_id", async (req, res) => { // Get User Req
     res.status(200).json(request[0]);
 });
 
-router.get("/request/:reader_id", async (req, res) => { // Get User Requests by his id
+router.get("/request/:reader_id", async (req, res) => { // Get all Reader Requests
     const query = util.promisify(conn.query).bind(conn);
     const {reader_id} = req.params;
     const sql = 
@@ -44,14 +44,14 @@ router.get("/request/:reader_id", async (req, res) => { // Get User Requests by 
     res.status(200).json(request);
 });
 
-router.get("/request", async (req, res) => { // Show Pending Requests
+router.get("/request", async (req, res) => { // Get all Pending Requests
     const query = util.promisify(conn.query).bind(conn);
     const sql = 
     `SELECT user.userName, user.user_id, book.bookName, book.book_id, book.image_url, book_request.status, book_request.requestDate
     FROM book_request 
     JOIN book ON book.book_id = book_request.book_id 
     JOIN user ON user.user_id = book_request.reader_id
-    WHERE book_request.status = "Requested"`
+    WHERE book_request.status = "REQUESTED"`
     const request = await query(sql);
     request.map((reqImg) => {
         reqImg.image_url = "http://" + req.hostname + ":4000/" + reqImg.image_url;
@@ -59,7 +59,7 @@ router.get("/request", async (req, res) => { // Show Pending Requests
     res.status(200).json(request);
 });
 
-router.get("/approveRequest", async (req, res) => { // Show APPROVED Requests
+router.get("/approveRequest", async (req, res) => { // Get All APPROVED Requests
     const query = util.promisify(conn.query).bind(conn);
     const sql = 
     `SELECT user.userName, user.user_id, book.bookName, book.book_id, book.image_url, book_request.status, book_request.requestDate
@@ -74,7 +74,7 @@ router.get("/approveRequest", async (req, res) => { // Show APPROVED Requests
     res.status(200).json(request);
 });
 
-router.get("/declineRequest", async (req, res) => { // Show DECLINED Requests
+router.get("/declineRequest", async (req, res) => { // Get All DECLINED Requests
     const query = util.promisify(conn.query).bind(conn);
     const sql = 
     `SELECT user.userName, user.user_id, book.bookName, book.book_id, book.image_url, book_request.status, book_request.requestDate
@@ -89,6 +89,81 @@ router.get("/declineRequest", async (req, res) => { // Show DECLINED Requests
     res.status(200).json(request);
 });
 
+router.get("/getApprovedBooks/:reader_id/:page", async (req, res) => { // Get All APPROVED books To Read
+
+    const {reader_id} = req.params;
+    const {page} = req.params;
+    minPage = parseInt(page) * 10;
+    maxPage = minPage + 10;
+
+    const query = util.promisify(conn.query).bind(conn);
+    const GetNumberOfBooks = util.promisify(conn.query).bind(conn);
+
+    const sql = 
+    `SELECT book.book_id, bookName, bookDescription, author, field, publicationDate, image_url, pdf_url, Count(*) AS 'CountChapters' 
+    FROM book 
+    RIGHT JOIN chapter on book.book_id = chapter.book_id
+    JOIN book_request ON book.book_id = book_request.book_id
+    WHERE book_request.status = 'APPROVED' and book_request.reader_id = ${reader_id}
+    GROUP BY chapter.book_id ORDER BY bookName ASC 
+    LIMIT ${minPage}, ${maxPage}`
+
+    const books = await query(sql);
+    const numberOfBooks = await GetNumberOfBooks(`SELECT COUNT(*) AS 'CountBooks' 
+    FROM book JOIN book_request ON book.book_id = book_request.book_id 
+    WHERE book_request.status = 'APPROVED' and book_request.reader_id = ${reader_id}`);
+    const numberOfPages = Math.ceil(numberOfBooks[0].CountBooks / 10); 
+
+    books.map((book) => {
+        book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
+        book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
+    });
+
+    res.status(200).json({   
+        books:books,
+        numberOfBooks: numberOfBooks,
+        numberOfPages: numberOfPages,
+        currentPage:+page
+    });
+});
+
+router.get("/getRequestedBooks/:reader_id/:page", async (req, res) => { // Get All REQUESTED books for a specific Reader
+
+    const {reader_id} = req.params;
+    const {page} = req.params;
+    minPage = parseInt(page) * 10;
+    maxPage = minPage + 10;
+  
+    const query = util.promisify(conn.query).bind(conn);
+    const GetNumberOfRequests = util.promisify(conn.query).bind(conn);
+  
+    const sql = 
+    `SELECT book.book_id, bookName, bookDescription, author, field, publicationDate, requestDate, status, image_url, pdf_url, Count(*) AS 'CountChapters' 
+    FROM book 
+    RIGHT JOIN chapter on book.book_id = chapter.book_id
+    JOIN book_request ON book.book_id = book_request.book_id
+    WHERE book_request.reader_id = ${reader_id}
+    GROUP BY chapter.book_id ORDER BY bookName ASC 
+    LIMIT ${minPage}, ${maxPage}`
+  
+    const books = await query(sql);
+    const numberOfRequests = await GetNumberOfRequests(`SELECT COUNT(*) AS 'CountRequests' 
+    FROM book JOIN book_request ON book.book_id = book_request.book_id 
+    WHERE book_request.reader_id = ${reader_id}`);
+    const numberOfPages = Math.ceil(numberOfRequests[0].CountRequests / 10); 
+  
+    books.map((book) => {
+        book.image_url = "http://" + req.hostname + ":4000/" + book.image_url;
+        book.pdf_url = "http://" + req.hostname + ":4000/" + book.pdf_url;
+    });
+  
+    return res.status(200).json({   
+        books:books,
+        numberOfRequests: numberOfRequests,
+        numberOfPages: numberOfPages,
+        currentPage:+page
+    });
+  });
 
 router.post("/request", 
 async(req, res) => {
@@ -107,15 +182,15 @@ async(req, res) => {
             status: "REQUESTED",
         }
 
-        const query = util.promisify(conn.query).bind(conn); // TO USE AWAIT
+        const query = util.promisify(conn.query).bind(conn);
         query("INSERT INTO book_request SET ?", request);
 
-        res.status(200).json({
+        return res.status(200).json({
             msg :"Request has been Created",
         });
 
     } catch(err){
-        res.status(500).json(err);
+        return res.status(500).json(err);
     }
 });
 
@@ -127,16 +202,16 @@ router.put(("/approveRequest/:reader_id/:book_id"), async (req, res) => { // Adm
         }
         const data = req.params
         const sql = `UPDATE book_request SET status = 'APPROVED' 
-        WHERE reader_id LIKE'%${data.reader_id}%' AND book_id LIKE'%${data.book_id}%'`;
+        WHERE reader_id = ${data.reader_id} AND book_id = ${data.book_id}`;
         const query = util.promisify(conn.query).bind(conn);
         await query(sql);
 
-        res.status(200).json({
+        return res.status(200).json({
             msg: "Request has been Approved",
         });
         
     } catch (err) {
-      res.status(500).json(err);
+        return res.status(500).json(err);
     }
 });
 
@@ -148,16 +223,16 @@ router.put(("/declineRequest/:reader_id/:book_id"), async (req, res) => { // Adm
         }
         const data = req.params
         const sql = `UPDATE book_request SET status = 'DECLINED' 
-        WHERE reader_id LIKE'%${data.reader_id}%' AND book_id LIKE'%${data.book_id}%'`;
+        WHERE reader_id = ${data.reader_id} AND book_id = ${data.book_id}`;
         const query = util.promisify(conn.query).bind(conn);
         await query(sql);
 
-        res.status(200).json({
+        return res.status(200).json({
             msg: "Request has been Declined",
         });
         
     } catch (err) {
-      res.status(500).json(err);
+        return res.status(500).json(err);
     }
 });
 
@@ -166,24 +241,11 @@ router.delete("/request/:reader_id/:book_id", async (req, res) => {//delete spec
         const data = req.params;
         const query = util.promisify(conn.query).bind(conn);
         await query(`DELETE FROM book_request WHERE reader_id LIKE'%${data.reader_id}%' AND book_id LIKE'%${data.book_id}%'`);
-        res.status(200).json({
+        return res.status(200).json({
           msg: "Request has been Deleted Successfully",
         });
       } catch (err) {
-        res.status(500).json(err);
-      }
-});
-
-router.delete("/request/:reader_id", async (req, res) => {
-    try {
-        const {reader_id} = req.params;
-        const query = util.promisify(conn.query).bind(conn);
-        await query("DELETE FROM book_request WHERE reader_id = ?", reader_id);
-        res.status(200).json({
-          msg: "Requests Delete Successfully",
-        });
-      } catch (err) {
-        res.status(500).json(err);
+        return res.status(500).json(err);
       }
 });
 

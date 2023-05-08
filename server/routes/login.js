@@ -2,6 +2,8 @@ const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const conn = require("../db/connection");
 const util = require("util");
+const bcrypt = require("bcrypt");
+
 // LOG IN
 router.post(
   "/login", 
@@ -31,7 +33,10 @@ router.post(
         });
       }
       
-      if (checkEmail[0].password == req.body.password) {
+      // checkPassword = checkEmail[0].password == req.body.password;
+      const checkPassword = bcrypt.compare(checkEmail[0].password, req.body.password);
+
+      if (checkPassword) {
         const checkActivation = await q("SELECT status FROM user WHERE user_id = ?", [checkEmail[0].user_id])
         if (checkActivation[0].status == "INACTIVE") {
           return res.status(400).json({
