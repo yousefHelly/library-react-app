@@ -11,7 +11,7 @@ import { FaUserPlus } from 'react-icons/fa';
 import { FcApproval, FcHighPriority } from 'react-icons/fc';
 import { ACTIVE, SUCCESS } from '../../Redux/Types';
 import { Pagination } from '../../components/layout/Pagination';
-import { GetAllUsers } from '../../Redux/actions/AllActions';
+import { GetAllUsers, ShowNotification } from '../../Redux/actions/AllActions';
 export const AdminAllUsers = () => {
     const dispatch = useDispatch()
     const [users,setUsers] = useState([])
@@ -34,13 +34,8 @@ export const AdminAllUsers = () => {
         const deleteUser =  await axios.delete(`http://localhost:4000/reader/${deletedUser.user_id}`)
         const res =  await deleteUser.data        
         dispatch(ShowNotification(res.msg,SUCCESS))
-        dispatch(GetAllUsers(currentPage))
-        setDeleteDialog(false)
         dispatch(GetAllUsers(0))
-        toast.success(res.msg,{
-            theme:'dark',
-            position:'top-right'
-        })
+        setDeleteDialog(false)
     }
   return (
     <React.Fragment>

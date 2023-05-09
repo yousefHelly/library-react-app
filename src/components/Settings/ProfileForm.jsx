@@ -9,10 +9,10 @@ import { motion } from 'framer-motion';
 import { childVariants } from '../../animations/home';
 import axios from 'axios';
 import { FileUpload } from '../Admin/FileUpload';
-import { ACTIVE, SECRET } from '../../Redux/Types';
+import { ACTIVE, SECRET, SUCCESS } from '../../Redux/Types';
 import { useNavigate } from 'react-router-dom';
 import { AES } from 'crypto-js';
-import { ChangeCurrentUser } from '../../Redux/actions/AllActions';
+import { ChangeCurrentUser, ShowNotification } from '../../Redux/actions/AllActions';
 const FormInput = ({children})=>{
     return(
         <div className='flex gap-2 flex-col col-span-6 px-6'>
@@ -107,6 +107,7 @@ export const ProfileForm = () => {
                 sessionStorage.setItem('User',decryptedUser)          
                 dispatch(ChangeCurrentUser(updatedUser));
             }
+            dispatch(ShowNotification(res.data.msg,SUCCESS))
         })
         setTimeout(()=>{
             navigate('/')

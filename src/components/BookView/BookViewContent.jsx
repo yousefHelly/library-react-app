@@ -3,16 +3,18 @@ import {motion} from 'framer-motion'
 import { toast, ToastContainer, Zoom } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { BookViewContentContainerVariants, BookViewContentTextVariants } from './../../animations/viewBook';
-import { ADMIN, APPROVED, AVAILABLE, DECLINED, READER, REQUESTED } from './../../Redux/Types';
-import { useSelector } from 'react-redux';
+import { ADMIN, APPROVED, AVAILABLE, DECLINED, READER, REQUESTED, SUCCESS } from './../../Redux/Types';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios' 
+import { ShowNotification } from '../../Redux/actions/AllActions';
 export const BookViewContent = ({book,id}) => {
     const navigate = useNavigate()
     const userIdRef = useRef(null)
     const User = useSelector((state)=>state.user.currentUser)
     userIdRef.current = User.user_id? User.user_id:userIdRef.current
     const [bookStatus,setBookStatus] = useState('')
+    const dispatch = useDispatch()
     useEffect(()=>{
         setTimeout(()=>{
             User.type!=ADMIN&&axios.get(`http://localhost:4000/request/${userIdRef.current}/${id}`).then((res)=>{
@@ -32,17 +34,9 @@ export const BookViewContent = ({book,id}) => {
         axios.post(`http://localhost:4000/request`,{
             reader_id:User.user_id,
             book_id:id
-        }).then(()=>notifyRequest()).then(
+        }).then((res)=>dispatch(ShowNotification(res.data.msg,SUCCESS))).then(
             setBookStatus(REQUESTED)
         )
-    }
-    const notifyRequest = ()=>{
-        toast.success(`${book.bookName} has been requested Successfully !`, {
-            position: "top-left",
-            theme: "dark",
-            toastId:1          
-        }
-        );
     }
   return (
     <React.Fragment>

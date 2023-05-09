@@ -105,7 +105,10 @@ router.post("/reader",
     };
 
     await query("INSERT INTO user SET ?", user);
-    return res.status(200).json(user);
+    return res.status(200).json({
+      user:user,
+      msg: "User Created successfully",
+    });
 
   } catch(err){
     return res.status(500).json({err: err});
