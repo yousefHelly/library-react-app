@@ -1,21 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { BookViewContentContainerVariants, BookViewContentTextVariants } from './../../animations/viewBook';
 import { motion } from 'framer-motion';
 import { ContainerVariants, cardChildVariants } from './../../animations/home';
 import { BookGridView } from './../home/BookGridView';
-import { useDispatch, useSelector } from 'react-redux';
-import { ChangeCurrent, GetAllBooks } from '../../Redux/actions/AllActions';
 import { BiMessageAltError } from 'react-icons/bi';
 export const AuthorProfileContent = ({authorData,booksCount,authorName}) => {
-    const[Books,setBooks] = useState([])
-    const dispatch = useDispatch()
-    useEffect(()=>{
-        dispatch(GetAllBooks(0))
-    },[])
-    const booksData = useSelector((state)=>state.booksData.Books)
-    useEffect(()=>{
-        setBooks(booksData.books)
-      },[booksData])
   return (
     <React.Fragment>
     <div className='grid mb-8 grid-cols-4'>

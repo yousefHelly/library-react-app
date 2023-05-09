@@ -11,9 +11,10 @@ import { FileUpload } from '../../components/Admin/FileUpload';
 import { AddEditBookChapters } from '../../components/Admin/AddEditBookChapters';
 import axios from 'axios';
 import { MdError } from 'react-icons/md';
-import { useSelector } from 'react-redux';
-import { ADMIN } from '../../Redux/Types';
+import { useDispatch, useSelector } from 'react-redux';
+import { ADMIN, FAILED, SUCCESS } from '../../Redux/Types';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
+import { ShowNotification } from '../../Redux/actions/AllActions';
 const categoryOptions = []
 cats.map((cat)=>{
     categoryOptions.push({
@@ -24,6 +25,7 @@ cats.map((cat)=>{
 export const AdminAddEditBook = () => {
     let {id} = useParams()
     const User = useSelector((state)=>state.user.currentUser)
+    const dispatch = useDispatch()
     const [currentBook,setCurrentBook] = useState({})
     const [chapters,setChapters] = useState([])
     useEffect(()=>{
@@ -168,8 +170,10 @@ export const AdminAddEditBook = () => {
                     image:values.BookImg
                 },{headers:{'Content-Type':'multipart/form-data'}})
                 //take book id from respond and send the pdf in another request
-                .then( 
+                .then( (res)=>{
+                    dispatch(ShowNotification(res.data.msg,SUCCESS))
                     axios.put(`http://localhost:4000/addPDF/${id}`,{pdf: fileRef.current.files[0]},{headers:{'Content-Type':'multipart/form-data'}})
+                }
                 )
                 setTimeout(()=>{
                     values.chapters.map((chapter)=>{
@@ -200,8 +204,10 @@ export const AdminAddEditBook = () => {
                         field:values.BookCategory,
                         publicationDate:values.BookPublicationDate,
                         image:values.BookImg}
-                        ,{headers:{'Content-Type':'multipart/form-data'}}).then(
-                            (res)=> axios.put(`http://localhost:4000/addPDF/${res.data.book_id[0].book_id}`,{pdf: fileRef.current.files[0]},{headers:{'Content-Type':'multipart/form-data'}})
+                        ,{headers:{'Content-Type':'multipart/form-data'}}).then((res)=>{
+                            dispatch(ShowNotification(res.data.msg,SUCCESS))
+                            axios.put(`http://localhost:4000/addPDF/${res.data.book_id[0].book_id}`,{pdf: fileRef.current.files[0]},{headers:{'Content-Type':'multipart/form-data'}})
+                        }
                         ).then(()=>{
                             setTimeout(()=>{
                             values.chapters.map((chapter)=>{
@@ -215,10 +221,7 @@ export const AdminAddEditBook = () => {
                                 navigate('/admin/all-books')
                             },1000)
                         }).catch((err)=>{
-                            toast.error(err.response.data.errors[0].msg,{
-                                position:'bottom-right',
-                                theme:'dark',
-                            })
+                            dispatch(ShowNotification(err.response.data.errors[0].msg,FAILED))
                         })
         }
     }

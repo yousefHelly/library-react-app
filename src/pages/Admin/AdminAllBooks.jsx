@@ -8,9 +8,10 @@ import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 import { ToastContainer, Zoom, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllBooks } from '../../Redux/actions/AllActions';
+import { GetAllBooks, ShowNotification } from '../../Redux/actions/AllActions';
 import { AdminViewAll } from '../../components/Admin/AdminViewAll';
 import { Pagination } from '../../components/layout/Pagination';
+import { SUCCESS } from '../../Redux/Types';
 export const AdminAllBooks = () => {
     const dispatch = useDispatch()
     const [Books,setBooks] = useState([])
@@ -32,10 +33,7 @@ export const AdminAllBooks = () => {
         const res =  await deleteBook.data
         setDeleteDialog(false)
         dispatch(GetAllBooks(0))
-        toast.success(res.msg,{
-            theme:'dark',
-            position:'top-right'
-        })
+        dispatch(ShowNotification(res.msg,SUCCESS))
     }
 
   return (
@@ -74,7 +72,6 @@ export const AdminAllBooks = () => {
         <div className='w-full flex justify-center items-center'>
             {Books&&Books.length>0&&<Pagination/>}
         </div>
-    <ToastContainer transition={Zoom}/>
     </React.Fragment>
   )
 }

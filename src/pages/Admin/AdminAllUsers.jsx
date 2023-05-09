@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AdminViewAll } from '../../components/Admin/AdminViewAll';
 import { FaUserPlus } from 'react-icons/fa';
 import { FcApproval, FcHighPriority } from 'react-icons/fc';
-import { ACTIVE } from '../../Redux/Types';
+import { ACTIVE, SUCCESS } from '../../Redux/Types';
 import { Pagination } from '../../components/layout/Pagination';
 import { GetAllUsers } from '../../Redux/actions/AllActions';
 export const AdminAllUsers = () => {
@@ -32,7 +32,9 @@ export const AdminAllUsers = () => {
     //this function can be used in redux
     const handleDelete = async()=>{
         const deleteUser =  await axios.delete(`http://localhost:4000/reader/${deletedUser.user_id}`)
-        const res =  await deleteUser.data
+        const res =  await deleteUser.data        
+        dispatch(ShowNotification(res.msg,SUCCESS))
+        dispatch(GetAllUsers(currentPage))
         setDeleteDialog(false)
         dispatch(GetAllUsers(0))
         toast.success(res.msg,{
@@ -86,7 +88,6 @@ export const AdminAllUsers = () => {
             </Dialog>
         }
         </AnimatePresence>
-    <ToastContainer transition={Zoom}/>
     <div className='w-full flex justify-center items-center'>
         {users&&users.length>0&&<Pagination page='allUsers'/>}
     </div>

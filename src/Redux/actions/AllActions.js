@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR, GET_REQUESTS, GET_BOOKS, GET_CURRENT_BOOK, GET_AUTHORS, GET_SEARCH_HISTORY, GET_AUTHORS_PAGE, GET_USERS, GET_SEARCH_BOOKS, UPDATE_SEARCH_VALUE } from '../Types';
+import { CHANGE_CURRENT_PAGE, CHANGE_CURRENT_USER, CLOSE_SIDENAV, OPEN_SIDENAV, VISITOR, GET_REQUESTS, GET_BOOKS, GET_CURRENT_BOOK, GET_AUTHORS, GET_SEARCH_HISTORY, GET_AUTHORS_PAGE, GET_USERS, GET_SEARCH_BOOKS, UPDATE_SEARCH_VALUE, NOTIFICATION } from '../Types';
 import { CHANGE_CURRENT_BOOK } from '../Types';
 import { HOME } from './../Types';
 
@@ -32,6 +32,15 @@ export const ChangeCurrentUser = (currentUser=VISITOR)=>{
     return{
         type:CHANGE_CURRENT_USER,
         user:currentUser
+    }
+}
+export const ShowNotification = (msg,type)=>{
+    return{
+        type:NOTIFICATION,
+        notification:{
+            msg:msg,
+            type:type
+        }
     }
 }
 
