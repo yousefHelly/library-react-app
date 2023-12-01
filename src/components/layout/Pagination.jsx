@@ -9,7 +9,7 @@ import { REQUESTED } from '../../Redux/Types'
 export const Pagination = ({page='books', category, id, status, author}) => {
     const dispatch = useDispatch()
     //books page
-    const AllPages = useSelector((state)=>state.booksData.totalPages)
+    const AllPages = useSelector((state)=>state.booksData.totalPages) || 1
     const currentPage = useSelector((state)=>state.booksData.currentPage) || 0
     //authors page
     const authorAllPages = useSelector((state)=>state.authorsData.totalPages)
@@ -23,8 +23,8 @@ export const Pagination = ({page='books', category, id, status, author}) => {
     const historyCurrentPage = useSelector((state)=>state.searchHistoryData.currentPage)
     const searchValue = useSelector((state)=>state.booksData.searchValue)
     const handlePageClick = (pageNum)=>{
-        page==='books'&& !id?dispatch(GetAllBooks(pageNum.selected)):page==='category'?dispatch(GetCategoryBooks(category,pageNum.selected)):page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):page==='allUsers'?dispatch(GetAllUsers(pageNum.selected)):page==='authorProfile'?dispatch(GetAuthorData(author,pageNum.selected)): dispatch(GetAllAuthors(pageNum.selected))
-        if(id && page==='books'){
+        (((page==='books')&& !id )|| page==='requests')?dispatch(GetAllBooks(pageNum.selected)):page==='category'?dispatch(GetCategoryBooks(category,pageNum.selected)):page==='searchHistory'?dispatch(GetSearchHistory(historyUserId,pageNum.selected)):page==='allUsers'?dispatch(GetAllUsers(pageNum.selected)):page==='authorProfile'?dispatch(GetAuthorData(author,pageNum.selected)): dispatch(GetAllAuthors(pageNum.selected))
+        if(id && (page==='books' || page==='requests')){
             if(status==='requested'){
                 dispatch(GetMyRequestedBooks(id,pageNum.selected))
             }else{
@@ -53,7 +53,7 @@ export const Pagination = ({page='books', category, id, status, author}) => {
             onPageChange={handlePageClick}
             pageRangeDisplayed={range}
             marginPagesDisplayed={range}
-            pageCount={page==='books'|| page ==='category' || page === 'search'?AllPages:page==='searchHistory'?historyAllPages:page==='allUsers'?usersAllPages:authorAllPages}
+            pageCount={page==='books'|| page==='requests' || page ==='category' || page === 'search'?AllPages:page==='searchHistory'?historyAllPages:page==='allUsers'?usersAllPages:authorAllPages}
             previousLabel="Prev"
             containerClassName='btn-group justify-center m-4'
             pageClassName='btn btn-md px-0'
@@ -66,7 +66,7 @@ export const Pagination = ({page='books', category, id, status, author}) => {
             breakLinkClassName='w-full h-full flex justify-center items-center'
             activeClassName='btn btn-md btn-active'
             activeLinkClassName='w-full h-full flex justify-center items-center'
-            forcePage={page==='books'|| page ==='category' || page === 'search'?currentPage:page==='searchHistory'?historyCurrentPage:page==='allUsers'?userCurrentPage:authorCurrentPage}
+            forcePage={page==='books'|| page==='requests'|| page ==='category' || page === 'search'?currentPage:page==='searchHistory'?historyCurrentPage:page==='allUsers'?userCurrentPage:authorCurrentPage}
         />
     </React.Fragment>
   )

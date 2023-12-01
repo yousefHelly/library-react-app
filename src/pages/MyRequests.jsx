@@ -22,7 +22,7 @@ export const MyRequests = () => {
 },[userIdRef.current])
   const BooksData = useSelector((state)=>state.booksData.Books)
   useEffect(()=>{
-    BooksData.books&&BooksData.books[0].status&&setBooks(BooksData.books)
+    BooksData.books&&BooksData.books.length>0&&BooksData.books[0].status&&setBooks(BooksData.books)
   },[BooksData.books])
   useEffect(
     ()=>{
@@ -38,8 +38,8 @@ export const MyRequests = () => {
     <motion.h4 variants={childVariants} className='text-xl font-bold'>My requests</motion.h4>
     <motion.div variants={ContainerVariants} className='suggested books grid sm:mx-20 md:mx-0 gap-5'>
       {
-        Books?
-        Books.length>0&&
+        Books&&
+        Books.length>0?
         Books.map((book)=>{
           return(
                   <RequestedBook key={count++} book={book} index={book.book_id} date={book.requestDate} status={book?.status}/>
@@ -54,7 +54,7 @@ export const MyRequests = () => {
         Books&&
         Books.length>0&&
         userIdRef.current&&
-        <Pagination id={userIdRef.current} page='books' status='requested'/>
+        <Pagination id={userIdRef.current} page='requests' status='requested'/>
       }
     </motion.div>
     </motion.div>

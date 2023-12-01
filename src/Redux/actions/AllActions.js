@@ -56,8 +56,11 @@ export const GetAllBooks = (page=0)=>{
 }
 export const GetMyRequestedBooks = (id,page=0)=>{
     return async(dispatch)=>{
-        const booksData = await axios.get(`http://localhost:4000/getRequestedBooks/${id}/${page}`)
-        dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
+        setTimeout(async()=>{
+            const booksData = await axios.get(`http://localhost:4000/getRequestedBooks/${id}/${page}`)
+            dispatch({type:GET_BOOKS,Books:booksData.data,totalPages:booksData.data.numberOfPages,currentPage:booksData.data.currentPage})
+
+        },750)
     }
 }
 export const GetAllMyBooks = (id,page=0)=>{
