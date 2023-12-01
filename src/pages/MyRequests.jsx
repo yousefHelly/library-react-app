@@ -42,7 +42,7 @@ export const MyRequests = () => {
         Books.length>0&&
         Books.map((book)=>{
           return(
-                  <RequestedBook key={count++} book={book} index={book.book_id} date={book.requestDate} status={book.status}/>
+                  <RequestedBook key={count++} book={book} index={book.book_id} date={book.requestDate} status={book?.status}/>
               )
       }):
         <div className='flex flex-col col-span-full items-center h-80 justify-center p-8'>
@@ -53,7 +53,8 @@ export const MyRequests = () => {
       {
         Books&&
         Books.length>0&&
-        <Pagination id={userIdRef.current} status='requested'/>
+        userIdRef.current&&
+        <Pagination id={userIdRef.current} page='books' status='requested'/>
       }
     </motion.div>
     </motion.div>

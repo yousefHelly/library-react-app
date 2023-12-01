@@ -31,17 +31,17 @@ export const DetailsNavCurrentBook = () => {
                 <motion.p variants={imgVariants} className='sec -mt-5 text-lg'>{book.author}</motion.p>
                     <motion.div variants={bookInfoVariants} className='flex w-full gap-5 justify-center items-center bg-base-100/5 backdrop-blur-sm py-5 px-2 rounded-3xl'>
                         <motion.div variants={bookInfoTextVariants} className='flex items-center flex-col gap-1 text-xs'>
-                            <span className='font-bold text-sm'>{book.field}</span>
+                            <span className='font-bold text-sm text-center'>{book.field}</span>
                             <span className='sec'>Category</span>
                         </motion.div>
                     <span className='h-7 w-[1px] bg-slate-400'></span>
                         <motion.div variants={bookInfoTextVariants} className='flex items-center flex-col gap-1 text-xs'>
-                            <span className='font-bold text-sm'>{book.publicationDate}</span>
+                            <span className='font-bold text-sm text-center'>{book.publicationDate}</span>
                             <span className='sec'>Date</span>
                         </motion.div>
                     <span className='h-7 w-[1px] bg-slate-400'></span>
                         <motion.div variants={bookInfoTextVariants} className='flex items-center flex-col gap-1 text-xs'>
-                            <span className='font-bold text-sm'>{book.CountChapters}</span>
+                            <span className='font-bold text-sm text-center'>{book.CountChapters}</span>
                             <span className='sec'>Chapters</span>
                         </motion.div>
                     </motion.div>
